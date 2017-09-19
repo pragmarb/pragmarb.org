@@ -1,54 +1,114 @@
 ---
-###
-# note: will result in an all-in-one-file stylesheet e.g. style.css
-#   in _config.yml add:
-#     sass:
-#       sass_dir: css
-#       style:    expanded
 ---
 
-
-@import 'settings';
-
-/*
- * css styles go here
- */
+@import "_normalize.css";
+@import "_settings";
+@import url('https://fonts.googleapis.com/css?family=Inconsolata:400,700');
 
 body {
-  font-family: $font-family;
+  font-family: 'Inconsolata', monospace;
 }
 
-a, a:visited {
-  color: $link-color;
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 15px;
+}
+
+.project-title-container {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.project-title {
+  text-align: center;
+  margin-bottom: 50px;
+  font-size: 250%;
+}
+
+.components {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.component {
+  padding: 15px;
+  border: 1px solid black;
+  border-radius: 4px;
+  max-width: 250px;
+  margin: 7.5px;
+  display: block;
   text-decoration: none;
+  color: inherit;
+
+  &.operation {
+    border-color: $operation-color;
+
+    & > .component-title {
+      color: $operation-color;
+    }
+
+    &:hover {
+      background-color: $operation-color;
+      color: white;
+
+      & > .component-title {
+        color: white;
+      }
+    }
+  }
+
+  &.policy {
+    border-color: $policy-color;
+
+    & > .component-title {
+      color: $policy-color;
+    }
+
+    &:hover {
+      background-color: $policy-color;
+      color: white;
+
+      & > .component-title {
+        color: white;
+      }
+    }
+  }
+
+  &.decorator {
+    border-color: $decorator-color;
+
+    & > .component-title {
+      color: $decorator-color;
+    }
+
+    &:hover {
+      background-color: $decorator-color;
+      color: white;
+
+      & > .component-title {
+        color: white;
+      }
+    }
+  }
+
+  &.contract {
+    border-color: $contract-color;
+
+    & > .component-title {
+      color: $contract-color;
+    }
+
+    &:hover {
+      background-color: $contract-color;
+      color: white;
+
+      & > .component-title {
+        color: white;
+      }
+    }
+  }
 }
-
-a:hover {
-  text-decoration: underline;
-}
-
-
-
-
-#header {
-  padding: 4px;
-}
-
-#header .big {
-  font-size:   140%;
-  font-weight: bold;
-}
-
-#header .small {
-  font-size:    90%;
-  color:        grey;
-  padding-left: 15px;
-}
-
-#nav {
-  padding: 6px;
-}
-
-
-
-
