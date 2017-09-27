@@ -27,3 +27,4 @@ exclude:
   - .ruby-gemset
   - Gemfile
   - Gemfile.lock
+  - CNAME

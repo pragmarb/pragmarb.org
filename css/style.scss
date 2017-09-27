@@ -9,12 +9,26 @@ body {
   font-family: 'Inconsolata', monospace;
 }
 
+img {
+  display: block;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
 .container {
   max-width: 960px;
   margin: 0 auto;
   padding: 15px;
 }
 
+.project-logo {
+  max-width: 150px;
+  margin: 25px auto 30px auto;
+
+  & > img {
+    border-radius: 4px;
+  }
+}
 .project-title-container {
   max-width: 960px;
   margin: 0 auto;
