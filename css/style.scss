@@ -38,6 +38,10 @@ img {
   text-align: center;
   margin-bottom: 50px;
   font-size: 250%;
+
+  @media (max-width: 576px) {
+    font-size: 150%;
+  }
 }
 
 .components {
