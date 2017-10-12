@@ -169,7 +169,7 @@ end{% endhighlight %}
 
           def send_newsletter!(model:, **options)
             if options['result.contract.default'].send_newsletter
-              SendArticleNewsletterJob.perform_later model
+              SendArticleNewsletterJob.perform_later(model)
             end
           end
         end
