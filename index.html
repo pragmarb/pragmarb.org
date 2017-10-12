@@ -124,7 +124,7 @@ end{% endhighlight %}
           timestamp :created_at
           timestamp :updated_at
 
-          belongs_to :author, decorator: User::Decorator
+          belongs_to :author, decorator: User::Decorator::Instance
         end
 
         class Collection < Pragma::Decorator::Base
