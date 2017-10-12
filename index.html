@@ -1,10 +1,10 @@
 ---
 layout: default
-title: RESTful architecture in Ruby
+title: Beautiful RESTful APIs in Ruby
 description: A pragmatic, opinionated architecture for creating beautiful RESTful APIs in Ruby.
 ---
 
-<div class="container">
+<div class="headline-container">
   <div class="project-logo">
     <img src="/images/logo.png">
   </div>
@@ -15,37 +15,166 @@ description: A pragmatic, opinionated architecture for creating beautiful RESTfu
     </h1>
   </div>
 
-  <div class="components">
-    <a href="https://github.com/pragmarb/pragma-policy" class="component policy">
-      <h2 class="component-title">Policy</h2>
-
-      <p>
-        Resource authorization that's as simple as POROs.
-      </p>
+  <div class="headline-actions">
+    <a href="#" class="headline-action">
+      See it on GitHub
     </a>
+  </div>
 
-    <a href="https://github.com/pragmarb/pragma-contract" class="component contract">
-      <h2 class="component-title">Contract</h2>
+  <div class="headline-hint">
+    <p>or keep reading and see what it can do!</p>
+  </div>
+</div>
 
-      <p>
-        Like form objects, but for APIs. API objects?
-      </p>
-    </a>
+<div class="components">
+  <div class="component policy">
+    <h1 class="component-title">The Policy</h1>
+    <p class="component-subtitle">Resource authorization that's as simple as POROs.</p>
 
-    <a href="https://github.com/pragmarb/pragma-decorator" class="component decorator">
-      <h2 class="component-title">Decorator</h2>
+    {%highlight ruby %}
+module API
+  module V1
+    module Article
+      class Policy < Pragma::Policy::Base
+        class Scope < Pragma::Policy::Base::Scope
+          def resolve
+            scope.published.or(scope.written_by(user))
+          end
+        end
 
-      <p>
-        Powerful and elegant model presenters with a twist.
-      </p>
-    </a>
+        def show?
+          resource.published? || resource.author == user
+        end
 
-    <a href="https://github.com/pragmarb/pragma-operation" class="component operation">
-      <h2 class="component-title">Operation</h2>
+        def create?
+          user.role == :author
+        end
 
-      <p>
-        Business logic decoupling that doesn't get in the way.
-      </p>
-    </a>
+        def update?
+          resource.author == user
+        end
+
+        def destroy?
+          resource.author == user
+        end
+      end
+    end
+  end
+end
+    {% endhighlight %}
+  </div>
+
+  <div class="component contract">
+    <h1 class="component-title">The Contract</h1>
+    <p class="component-subtitle">Like form objects, but for APIs. API objects?</p>
+
+    {%highlight ruby %}
+module API
+  module V1
+    module Article
+      module Contract
+        class Base < Pragma::Contract::Base
+          property :title, type: coercible(:string)
+          property :description, type: coercible(:string)
+          property :headline, type: coercible(:string)
+          collection :tags
+
+          validation do
+            required(:title).filled(:str?)
+            required(:body) { filled? & str? & min_length?(300) }
+            required(:tags) { each(:str?) & min_size?(3) & max_size(10) }
+            optional(:headline).maybe(:str?)
+          end
+        end
+
+        class Create < Base
+          property :send_newsletter, virtual: true, type: coercible(:bool)
+
+          validation do
+            optional(:send_newsletter).filled(:bool?)
+          end
+        end
+      end
+    end
+  end
+end
+    {% endhighlight %}
+  </div>
+
+
+  <div class="component policy">
+    <h1 class="component-title">The Decorator</h1>
+    <p class="component-subtitle">Powerful and elegant model presenters with a twist.</p>
+
+    {%highlight ruby %}
+module API
+  module V1
+    module Article
+      module Decorator
+        class Instance < Pragma::Decorator::Base
+          feature Pragma::Decorator::Type
+          feature Pragma::Decorator::Timestamp
+          feature Pragma::Decorator::Association
+
+          property :title
+          property :description
+          property :tags
+          property :headline
+
+          timestamp :created_at
+          timestamp :updated_at
+
+          belongs_to :author,
+            decorator: API::V1::User::Decorator,
+            expandable: true
+        end
+
+        class Collection < Pragma::Decorator::Base
+          feature Pragma::Decorator::Collection
+          feature Pragma::Decorator::Pagination
+        end
+      end
+    end
+  end
+end
+    {% endhighlight %}
+  </div>
+
+  <div class="component contract">
+    <h1 class="component-title">The Operation</h1>
+    <p class="component-subtitle">Business logic decoupling that doesn't get in the way.</p>
+
+    {%highlight ruby %}
+module API
+  module V1
+    module Article
+      module Operation
+        class Index < Pragma::Operation::Index
+          self['pagination.default_per_page'] = 50
+        end
+
+        class Show < Pragma::Operation::Index
+        end
+
+        class Create < Pragma::Operation::Create
+          step :send_newsletter!
+
+          def send_newsletter!(options)
+            if options['result.contract.default'].send_newsletter
+              SendArticleNewsletterJob.perform_later options['model']
+            end
+          end
+        end
+
+        class Update < Pragma::Operation::Index
+        end
+
+        class Destroy < Pragma::Operation::Index
+        end
+      end
+    end
+  end
+end
+    {% endhighlight %}
   </div>
 </div>

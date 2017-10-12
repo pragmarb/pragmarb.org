@@ -3,10 +3,11 @@
 
 @import "normalize.css";
 @import "_settings";
-@import url('https://fonts.googleapis.com/css?family=Inconsolata:400,700');
+@import "_syntax";
+@import url('https://fonts.googleapis.com/css?family=Libre+Franklin:400,700,800');
 
 body {
-  font-family: 'Inconsolata', monospace;
+  font-family: 'Libre Franklin', monospace;
 }
 
 img {
@@ -48,85 +49,69 @@ img {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  max-width: 800px;
   margin: 0 auto;
+  width: 100%;
+  max-width: 1560px;
 }
 
 .component {
-  padding: 15px;
-  border: 1px solid black;
-  border-radius: 4px;
-  max-width: 250px;
-  margin: 7.5px;
-  display: block;
   text-decoration: none;
   color: inherit;
+  width: 100%;
+  padding-left: 15px;
+  padding-right: 15px;
+  max-width: 750px;
 
-  &.operation {
-    border-color: $operation-color;
-
-    & > .component-title {
-      color: $operation-color;
-    }
-
-    &:hover {
-      background-color: $operation-color;
-      color: white;
-
-      & > .component-title {
-        color: white;
-      }
-    }
+  .component-title {
+    margin-bottom: 0;
   }
 
-  &.policy {
-    border-color: $policy-color;
-
-    & > .component-title {
-      color: $policy-color;
-    }
-
-    &:hover {
-      background-color: $policy-color;
-      color: white;
-
-      & > .component-title {
-        color: white;
-      }
-    }
+  .component-subtitle {
+    color: #aaa;
+    font-size: 125%;
+    margin-top: 10px;
   }
+}
 
-  &.decorator {
-    border-color: $decorator-color;
+pre {
+  padding: 15px;
+  border-radius: 4px;
+  background-color: rgba(#eee, .3);
+}
 
-    & > .component-title {
-      color: $decorator-color;
-    }
+figure.highlight {
+  margin: 0;
+}
 
-    &:hover {
-      background-color: $decorator-color;
-      color: white;
+.headline-container {
+  background-color: rgba(#7FDBFF, .1);
+  padding: 100px;
+  margin-bottom: 100px;
+}
 
-      & > .component-title {
-        color: white;
-      }
-    }
+.headline-actions {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.headline-action {
+  display: inline-block;
+  background-color: rgba($contract-color, .75);
+  border-radius: 4px;
+  padding: 15px;
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  transition: background-color .1s ease-in-out;
+
+  &:hover {
+    background-color: rgba($contract-color, 1);
   }
+}
 
-  &.contract {
-    border-color: $contract-color;
-
-    & > .component-title {
-      color: $contract-color;
-    }
-
-    &:hover {
-      background-color: $contract-color;
-      color: white;
-
-      & > .component-title {
-        color: white;
-      }
-    }
-  }
+.headline-hint {
+  color: black;
+  text-align: center;
 }
