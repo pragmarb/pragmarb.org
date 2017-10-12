@@ -148,7 +148,7 @@ end{% endhighlight %}
     module Article
       module Operation
         class Index < Pragma::Operation::Index
-          self['pagination.default_per_page'] = 50
+          self['pagination.default_per_page'] = 10
         end
 
         class Show < Pragma::Operation::Show
@@ -157,9 +157,9 @@ end{% endhighlight %}
         class Create < Pragma::Operation::Create
           step :send_newsletter!
 
-          def send_newsletter!(options)
+          def send_newsletter!(model:, **options)
             if options['result.contract.default'].send_newsletter
-              SendArticleNewsletterJob.perform_later options['model']
+              SendArticleNewsletterJob.perform_later model
             end
           end
         end
