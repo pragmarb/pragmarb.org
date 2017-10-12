@@ -115,3 +115,21 @@ figure.highlight {
   color: black;
   text-align: center;
 }
+
+footer {
+  text-align: center;
+  max-widht: 1560px;
+  margin-top: 100px;
+  margin-bottom: 25px;
+  border-top: 1px solid #eee;
+  padding-top: 25px;
+
+  .heart {
+    color: #FF4136;
+  }
+
+  p {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}

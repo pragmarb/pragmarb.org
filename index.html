@@ -17,6 +17,7 @@ description: A pragmatic, opinionated architecture for creating beautiful RESTfu
 
   <div class="headline-actions">
     <a href="#" class="headline-action">
+      <i class="fa fa-github fa-fw"></i>
       See it on GitHub
     </a>
   </div>
@@ -153,7 +154,7 @@ module API
           self['pagination.default_per_page'] = 50
         end
 
-        class Show < Pragma::Operation::Index
+        class Show < Pragma::Operation::Show
         end
 
         class Create < Pragma::Operation::Create
@@ -166,10 +167,10 @@ module API
           end
         end
 
-        class Update < Pragma::Operation::Index
+        class Update < Pragma::Operation::Update
         end
 
-        class Destroy < Pragma::Operation::Index
+        class Destroy < Pragma::Operation::Destroy
         end
       end
     end
@@ -178,3 +179,7 @@ end
     {% endhighlight %}
   </div>
 </div>
+
+<footer>
+  <p>Made with <i class="fa fa-heart heart fa-fw"></i> in Rome.</p>
+</footer>
