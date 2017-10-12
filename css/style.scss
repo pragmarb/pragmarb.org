@@ -4,7 +4,7 @@
 @import "normalize.css";
 @import "_settings";
 @import "_syntax";
-@import url('https://fonts.googleapis.com/css?family=Libre+Franklin:400,700,800');
+@import url('https://fonts.googleapis.com/css?family=Libre+Franklin:400,700,800|Inconsolata');
 
 body {
   font-family: 'Libre Franklin', monospace;
@@ -21,6 +21,10 @@ pre {
   border-radius: 4px;
   background-color: rgba(#eee, .3);
   overflow-x: scroll;
+}
+
+code {
+  font-family: 'Inconsolata', monospace;
 }
 
 figure {
