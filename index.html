@@ -78,24 +78,24 @@ end{% endhighlight %}
         class Base < Pragma::Contract::Base
           property :title, type: coercible(:string)
           property :description, type: coercible(:string)
-          property :headline, type: coercible(:string)
+          property :published, type: coercible(:bool)
           collection :tags
 
           validation do
             required(:title).filled(:str?)
             required(:body) { filled? & str? & min_length?(300) }
-            required(:tags) { each(:str?) & min_size?(3) & max_size(10) }
-            optional(:headline).maybe(:str?)
+            required(:tags) { array? & each(:str?) & max_size(10) }
+            required(:published).filled(:bool?)
           end
         end
 
         class Create < Base
-          property :send_newsletter, virtual: true, type: coercible(:bool)
-
-          validation do
-            optional(:send_newsletter).filled(:bool?)
-          end
+          property :send_newsletter,
+            virtual: true,
+            type: coercible(:bool)
         end
+
+        class Update < Base; end
       end
     end
   end
@@ -119,14 +119,12 @@ end{% endhighlight %}
           property :title
           property :description
           property :tags
-          property :headline
+          property :published
 
           timestamp :created_at
           timestamp :updated_at
 
-          belongs_to :author,
-            decorator: API::V1::User::Decorator,
-            expandable: true
+          belongs_to :author, decorator: User::Decorator
         end
 
         class Collection < Pragma::Decorator::Base
@@ -149,10 +147,10 @@ end{% endhighlight %}
       module Operation
         class Index < Pragma::Operation::Index
           self['pagination.default_per_page'] = 10
+          self['expand.enabled'] = false
         end
 
-        class Show < Pragma::Operation::Show
-        end
+        class Show < Pragma::Operation::Show; end
 
         class Create < Pragma::Operation::Create
           step :send_newsletter!
@@ -164,11 +162,9 @@ end{% endhighlight %}
           end
         end
 
-        class Update < Pragma::Operation::Update
-        end
+        class Update < Pragma::Operation::Update; end
 
-        class Destroy < Pragma::Operation::Destroy
-        end
+        class Destroy < Pragma::Operation::Destroy; end
       end
     end
   end
