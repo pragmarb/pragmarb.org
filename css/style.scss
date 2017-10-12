@@ -97,11 +97,13 @@ footer {
 .headline-actions {
   max-width: 960px;
   margin: 0 auto;
-  display: flex;
-  justify-content: center;
 
   .headline-action {
-    display: inline-block;
+    display: flex;
+    justify-content: center;
+  }
+
+  .headline-action-link {
     background-color: rgba($contract-color, .75);
     border-radius: 4px;
     padding: 15px;
@@ -114,6 +116,12 @@ footer {
     &:hover {
       background-color: rgba($contract-color, 1);
     }
+  }
+
+  .headline-action-code {
+    display: inline-block;
+    margin-top: 0;
+    margin-bottom: 0;
   }
 }
 
@@ -140,6 +148,8 @@ footer {
   color: black;
   text-align: center;
   font-size: 90%;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 
 .heart {

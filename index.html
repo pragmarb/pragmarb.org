@@ -15,14 +15,18 @@ description: A pragmatic, opinionated architecture for creating beautiful RESTfu
     </h1>
 
     <div class="headline-actions">
-      <a href="#" class="headline-action">
-        <i class="fa fa-github fa-fw"></i>
-        See it on GitHub
-      </a>
-    </div>
+      <div class="headline-action">
+        <a href="https://github.com/pragmarb" class="headline-action-link">
+          <i class="fa fa-github fa-fw"></i>
+          See it on GitHub
+        </a>
+      </div>
 
-    <div class="headline-hint">
-      <p>or keep reading and see what it can do!</p>
+      <div class="headline-hint">or get started immediately:</div>
+
+      <div class="headline-action">
+        <pre class="headline-action-code">$ git clone git://github.com/<strong>pragmarb/pragma-rails-starter</strong>.git</pre>
+      </div>
     </div>
   </div>
 </div>
@@ -32,8 +36,7 @@ description: A pragmatic, opinionated architecture for creating beautiful RESTfu
     <h1 class="component-title">The Policy</h1>
     <p class="component-subtitle">Resource authorization that's as simple as POROs.</p>
 
-    {%highlight ruby %}
-module API
+    {%highlight ruby %}module API
   module V1
     module Article
       class Policy < Pragma::Policy::Base
@@ -61,16 +64,14 @@ module API
       end
     end
   end
-end
-    {% endhighlight %}
+end{% endhighlight %}
   </div>
 
   <div class="component contract">
     <h1 class="component-title">The Contract</h1>
     <p class="component-subtitle">Like form objects, but for APIs. API objects?</p>
 
-    {%highlight ruby %}
-module API
+    {%highlight ruby %}module API
   module V1
     module Article
       module Contract
@@ -98,8 +99,7 @@ module API
       end
     end
   end
-end
-    {% endhighlight %}
+end{% endhighlight %}
   </div>
 
 
@@ -107,8 +107,7 @@ end
     <h1 class="component-title">The Decorator</h1>
     <p class="component-subtitle">Powerful and elegant model presenters with a twist.</p>
 
-    {%highlight ruby %}
-module API
+    {%highlight ruby %}module API
   module V1
     module Article
       module Decorator
@@ -137,16 +136,14 @@ module API
       end
     end
   end
-end
-    {% endhighlight %}
+end{% endhighlight %}
   </div>
 
   <div class="component contract">
     <h1 class="component-title">The Operation</h1>
     <p class="component-subtitle">Business logic decoupling that doesn't get in the way.</p>
 
-    {%highlight ruby %}
-module API
+    {%highlight ruby %}module API
   module V1
     module Article
       module Operation
@@ -175,15 +172,12 @@ module API
       end
     end
   end
-end
-    {% endhighlight %}
+end{% endhighlight %}
   </div>
 </div>
 
 <div class="footer-container">
-
   <footer>
     <p>Made with <i class="fa fa-heart heart fa-fw"></i> in Rome.</p>
   </footer>
-
 </div>
