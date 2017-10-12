@@ -20,19 +20,25 @@ pre {
   padding: 15px;
   border-radius: 4px;
   background-color: rgba(#eee, .3);
+  overflow-x: scroll;
 }
 
 figure {
   margin: 0;
+  overflow-x: scroll;
+}
+
+.footer-container {
+  border-top: 1px solid #eee;
+  margin-top: 100px;
+  margin-bottom: 25px;
+  padding-top: 25px;
 }
 
 footer {
   text-align: center;
   max-width: 1560px;
-  margin-top: 100px;
-  margin-bottom: 25px;
-  border-top: 1px solid #eee;
-  padding-top: 25px;
+  margin: 0 auto;
 
   p {
     margin-top: 0;
@@ -46,44 +52,24 @@ footer {
   padding: 15px;
 }
 
-.project-logo {
-  max-width: 150px;
-  margin: 25px auto 30px auto;
-
-  & > img {
-    border-radius: 4px;
-  }
-}
-.project-title-container {
-  max-width: 960px;
-  margin: 0 auto;
-}
-
-.project-title {
-  text-align: center;
-  margin-bottom: 50px;
-  font-size: 250%;
-
-  @media (max-width: 576px) {
-    font-size: 150%;
-  }
-}
-
 .components {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  margin: 0 auto;
-  width: 100%;
   max-width: 1560px;
+  padding-left: 15px;
+  padding-right: 15px;
+  margin-top: 100px;
+  margin-left: auto;
+  margin-right: auto;
 
   .component {
     text-decoration: none;
     color: inherit;
     width: 100%;
-    padding-left: 15px;
-    padding-right: 15px;
     max-width: 750px;
+    margin-left: 15px;
+    margin-right: 15px;
 
     .component-title {
       margin-bottom: 0;
@@ -97,10 +83,15 @@ footer {
   }
 }
 
-.headline-container {
-  background-color: rgba(#7FDBFF, .1);
+.headline {
   padding: 100px;
   margin-bottom: 100px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.headline-container {
+  background-color: rgba(#7FDBFF, .1);
 }
 
 .headline-actions {
@@ -122,6 +113,25 @@ footer {
     &:hover {
       background-color: rgba($contract-color, 1);
     }
+  }
+}
+
+.headline-logo {
+  max-width: 150px;
+  margin: 25px auto 30px auto;
+
+  & > img {
+    border-radius: 4px;
+  }
+}
+
+.headline-title {
+  text-align: center;
+  margin-bottom: 50px;
+  font-size: 250%;
+
+  @media (max-width: 576px) {
+    font-size: 150%;
   }
 }
 
