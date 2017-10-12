@@ -73,6 +73,22 @@ footer {
     .component-title {
       margin-bottom: 0;
       font-size: 2em;
+
+      small {
+        font-size: 1em;
+        font-weight: normal;
+        color: #ccc;
+      }
+
+      a {
+        text-decoration: none;
+        color: #bbb;
+        transition: color .15s ease-in-out;
+
+        &:hover {
+          color: black;
+        }
+      }
     }
 
     .component-subtitle {
