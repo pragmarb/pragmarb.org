@@ -85,7 +85,7 @@ end{% endhighlight %}
           property :title, type: coercible(:string)
           property :description, type: coercible(:string)
           property :published, type: strict(:bool)
-          collection :tags, type: json(:array)
+          collection :tags
 
           validation do
             required(:title).filled(:str?)
