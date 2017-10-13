@@ -90,7 +90,7 @@ end{% endhighlight %}
           validation do
             required(:title).filled(:str?)
             required(:body) { filled? & str? & min_length?(300) }
-            required(:tags) { array? & each(:str?) & max_size(10) }
+            required(:tags) { array? & each(:str?) & max_size?(10) }
             required(:published).filled(:bool?)
           end
         end
