@@ -1,0 +1,18 @@
+footer {
+  text-align: center;
+  max-width: 1560px;
+  margin: 0 auto;
+
+  p {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+.footer-container {
+  margin-top: 100px;
+  padding-bottom: 25px;
+  padding-top: 25px;
+  background-color: $brand-blue;
+  color: $gray-light;
+}
