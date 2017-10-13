@@ -84,8 +84,8 @@ end{% endhighlight %}
         class Base < Pragma::Contract::Base
           property :title, type: coercible(:string)
           property :description, type: coercible(:string)
-          property :published, type: coercible(:bool)
-          collection :tags
+          property :published, type: strict(:bool)
+          collection :tags, type: json(:array)
 
           validation do
             required(:title).filled(:str?)
@@ -98,7 +98,7 @@ end{% endhighlight %}
         class Create < Base
           property :send_newsletter,
             virtual: true,
-            type: coercible(:bool)
+            type: strict(:bool)
         end
 
         class Update < Base; end
@@ -107,7 +107,6 @@ end{% endhighlight %}
   end
 end{% endhighlight %}
   </div>
-
 
   <div class="component policy">
     <h2 class="component-title">
