@@ -1,0 +1,33 @@
+.table {
+  border-collapse: collapse;
+  width: 100%;
+
+  td, th, tr {
+    padding: 10px;
+    border: 1px solid $gray;
+  }
+
+  &.table-comparison {
+    text-align: center;
+
+    .feature-name {
+      width: 20%;
+    }
+
+    .feature-check {
+      width: 10%;
+    }
+
+    td.yes {
+      width: 10%;
+      background-color: rgba($brand-green, .25);
+      color: $brand-green;
+    }
+
+    td.no {
+      width: 10%;
+      background-color: rgba($brand-red, .25);
+      color: $brand-red;
+    }
+  }
+}
