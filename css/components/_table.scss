@@ -10,12 +10,14 @@
   &.table-comparison {
     text-align: center;
 
-    .feature-name {
-      width: 20%;
+    tbody {
+      display: block;
+      max-width: calc(100vw - 30px);
+      overflow-x: auto;
     }
 
-    .feature-check {
-      width: 10%;
+    .feature-name {
+      width: 20%;
     }
 
     td.yes {
