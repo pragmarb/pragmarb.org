@@ -6,7 +6,7 @@
     text-align: center;
   }
 
-  p {
+  .section-content p {
     font-size: 1em;
     line-height: 1.7em;
 
@@ -18,6 +18,13 @@
 
 .section-title {
   font-size: 300%;
+  margin-bottom: 40px;
+}
+
+.section-subtitle {
+  color: $gray-darker;
+  font-size: 140%;
+  margin-top: -30px;
   margin-bottom: 40px;
 }
 
