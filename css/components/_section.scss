@@ -41,3 +41,10 @@
 .section-actions {
   margin-top: 35px;
 }
+
+.section-content {
+  &.section-content-sm{
+    max-width: 770px;
+    margin: 0 auto;
+  }
+}
