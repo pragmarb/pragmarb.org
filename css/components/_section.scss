@@ -14,6 +14,12 @@
       margin-bottom: 0;
     }
   }
+
+  &.section-hide-sm {
+    @media (max-width: 960px) {
+      display: none;
+    }
+  }
 }
 
 .section-title {
