@@ -1,5 +1,6 @@
 .headline-container {
-  background-color: $brand-blue-lightest;
+  background-color: $brand-snow;
+  border-bottom: 1px solid $gray-light;
 }
 
 .headline {
@@ -7,7 +8,6 @@
   max-width: 960px;
   margin-left: auto;
   margin-right: auto;
-  margin-bottom: 100px;
 }
 
 .headline-logo {
@@ -37,21 +37,6 @@
 .headline-action {
   display: flex;
   justify-content: center;
-}
-
-.headline-action-link {
-  background-color: rgba($brand-blue-lighter, .75);
-  border-radius: 4px;
-  padding: 15px;
-  color: white;
-  text-align: center;
-  font-weight: bold;
-  text-decoration: none;
-  transition: background-color .1s ease-in-out;
-
-  &:hover {
-    background-color: $brand-blue-lighter;
-  }
 }
 
 .headline-action-code {

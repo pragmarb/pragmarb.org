@@ -10,9 +10,9 @@ footer {
 }
 
 .footer-container {
-  margin-top: 100px;
   padding-bottom: 25px;
   padding-top: 25px;
-  background-color: $brand-blue;
-  color: $gray-light;
+  background-color: $brand-snow;
+  color: black;
+  border-top: 1px solid $gray-light;
 }
