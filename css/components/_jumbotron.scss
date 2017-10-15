@@ -1,4 +1,10 @@
 .jumbotron {
   border-bottom: 1px solid $gray-200;
   margin-bottom: 0;
+
+  .jumbotron-title {
+    @include media-breakpoint-down(sm) {
+      font-size: $font-size-lg;
+    }
+  }
 }
