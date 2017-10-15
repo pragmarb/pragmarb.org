@@ -1,13 +1,13 @@
 .section {
   padding-top: 100px;
-  padding-bottom: 100px;
 
   &.section-minor {
     padding-top: 50px;
     padding-bottom: 50px;
   }
 
-  & + & {
+  & + &.section-border {
+    margin-top: 100px;
     border-top: 1px solid $gray-200;
   }
 
