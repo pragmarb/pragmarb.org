@@ -1,18 +1,21 @@
 ---
 ---
 
-@import "vendor/normalize.css";
-@import "vendor/syntax";
-
 @import "_settings";
 
-@import "components/typography";
-@import "components/code";
-@import "components/footer";
-@import "components/image";
-@import "components/component";
-@import "components/headline";
-@import "components/icon";
-@import "components/button";
-@import "components/section";
+@import "vendor/syntax";
+
+@import "../node_modules/bootstrap/scss/bootstrap-reboot";
+@import "../node_modules/bootstrap/scss/bootstrap";
+@import "../node_modules/bootstrap/scss/bootstrap-grid";
+
 @import "components/table";
+@import "components/icon";
+@import "components/image";
+@import "components/typography";
+@import "components/jumbotron";
+@import "components/button";
+@import "components/component";
+@import "components/section";
+@import "components/grid";
+@import "components/footer";
