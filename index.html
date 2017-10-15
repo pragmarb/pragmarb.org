@@ -4,182 +4,177 @@ title: Build beautiful RESTful APIs with Ruby
 description: An expressive, opinionated ecosystem for building beautiful RESTful APIs with Ruby.
 ---
 
-<div class="headline-container">
-  <div class="headline">
-    <div class="headline-logo">
-      <img src="/images/logo.png">
+<div class="jumbotron text-center">
+  <div class="container">
+    <img src="/images/logo.png" style="max-width: 150px" class="mb-4 rounded img-fluid">
+
+    <h1>Pragma is an expressive, opinionated ecosystem for building beautiful RESTful APIs with Ruby.</h1>
+
+    <div class="mt-5">
+      <a class="btn btn-primary" href="https://github.com/pragmarb" role="button">
+        <i class="fa fa-github fa-fw"></i>
+        See it on GitHub
+      </a>
     </div>
-
-    <h1 class="headline-title">
-      Pragma is an expressive, opinionated ecosystem for building beautiful RESTful APIs with Ruby.
-    </h1>
-
-    <div class="headline-actions">
-      <div class="headline-action">
-        <a href="https://github.com/pragmarb" class="headline-action-link btn btn-primary">
-          <i class="fa fa-github fa-fw"></i>
-          See it on GitHub
-        </a>
-      </div>
-
-      <div class="headline-hint">or get started immediately:</div>
-
-      <div class="headline-action">
-        <pre class="headline-action-code">$ gem install <strong>pragma</strong></pre>
-      </div>
-    </div>
+    <div class="mt-2">or get started now:</div>
+    <div class="mt-2"><pre class="code-inline"><code>$ gem install <strong>pragma</strong></code></pre></div>
   </div>
 </div>
 
-<div class="components">
-  <div class="component policy">
-    <h2 class="component-title">
-      <small>Pragma::</small>Policy
-      <a href="https://github.com/pragmarb/pragma-policy"><i class="fa fa-github fa-fw"></i></a>
-    </h2>
-    <p class="component-subtitle">Resource authorization as simple as POROs.</p>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col component policy">
+      <h2 class="component-title">
+        <small>Pragma::</small>Policy
+        <a href="https://github.com/pragmarb/pragma-policy"><i class="fa fa-github fa-fw"></i></a>
+      </h2>
+      <p class="component-subtitle">Resource authorization as simple as POROs.</p>
 
-    {%highlight ruby %}module API
-  module V1
-    module Article
+      {%highlight ruby %}module API
+      module V1
+      module Article
       class Policy < Pragma::Policy::Base
-        class Scope < Pragma::Policy::Base::Scope
-          def resolve
-            scope.published.or(scope.written_by(user))
-          end
-        end
-
-        def show?
-          resource.published? || resource.author == user
-        end
-
-        def create?
-          user.role == :author
-        end
-
-        def update?
-          resource.author == user
-        end
-
-        def destroy?
-          resource.author == user
-        end
+      class Scope < Pragma::Policy::Base::Scope
+      def resolve
+      scope.published.or(scope.written_by(user))
       end
-    end
-  end
-end{% endhighlight %}
-  </div>
+      end
 
-  <div class="component contract">
-    <h2 class="component-title">
-      <small>Pragma::</small>Contract
-      <a href="https://github.com/pragmarb/pragma-contract"><i class="fa fa-github fa-fw"></i></a>
-    </h2>
-    <p class="component-subtitle">Like form objects but, you know, for APIs.</p>
+      def show?
+      resource.published? || resource.author == user
+      end
 
-    {%highlight ruby %}module API
-  module V1
-    module Article
+      def create?
+      user.role == :author
+      end
+
+      def update?
+      resource.author == user
+      end
+
+      def destroy?
+      resource.author == user
+      end
+      end
+      end
+      end
+      end{% endhighlight %}
+    </div>
+
+    <div class="col component contract">
+      <h2 class="component-title">
+        <small>Pragma::</small>Contract
+        <a href="https://github.com/pragmarb/pragma-contract"><i class="fa fa-github fa-fw"></i></a>
+      </h2>
+      <p class="component-subtitle">Like form objects but, you know, for APIs.</p>
+
+      {%highlight ruby %}module API
+      module V1
+      module Article
       module Contract
-        class Base < Pragma::Contract::Base
-          property :title, type: coercible(:string)
-          property :description, type: coercible(:string)
-          property :published, type: strict(:bool)
-          collection :tags
+      class Base < Pragma::Contract::Base
+      property :title, type: coercible(:string)
+      property :description, type: coercible(:string)
+      property :published, type: strict(:bool)
+      collection :tags
 
-          validation do
-            required(:title).filled(:str?)
-            required(:body) { filled? & str? & min_length?(300) }
-            required(:tags) { array? & each(:str?) & max_size?(10) }
-            required(:published).filled(:bool?)
-          end
-        end
-
-        class Create < Base
-          property :send_newsletter,
-            virtual: true,
-            type: strict(:bool)
-        end
-
-        class Update < Base; end
+      validation do
+      required(:title).filled(:str?)
+      required(:body) { filled? & str? & min_length?(300) }
+      required(:tags) { array? & each(:str?) & max_size?(10) }
+      required(:published).filled(:bool?)
       end
-    end
-  end
-end{% endhighlight %}
+      end
+
+      class Create < Base
+      property :send_newsletter,
+      virtual: true,
+      type: strict(:bool)
+      end
+
+      class Update < Base; end
+      end
+      end
+      end
+      end{% endhighlight %}
+    </div>
+
   </div>
 
-  <div class="component policy">
-    <h2 class="component-title">
-      <small>Pragma::</small>Decorator
-      <a href="https://github.com/pragmarb/pragma-decorator"><i class="fa fa-github fa-fw"></i></a>
-    </h2>
-    <p class="component-subtitle">Powerful and elegant model presenters with a twist.</p>
+  <div class="row">
+    <div class="col component policy">
+      <h2 class="component-title">
+        <small>Pragma::</small>Decorator
+        <a href="https://github.com/pragmarb/pragma-decorator"><i class="fa fa-github fa-fw"></i></a>
+      </h2>
+      <p class="component-subtitle">Powerful and elegant model presenters with a twist.</p>
 
-    {%highlight ruby %}module API
-  module V1
-    module Article
+      {%highlight ruby %}module API
+      module V1
+      module Article
       module Decorator
-        class Instance < Pragma::Decorator::Base
-          feature Pragma::Decorator::Type
-          feature Pragma::Decorator::Timestamp
-          feature Pragma::Decorator::Association
+      class Instance < Pragma::Decorator::Base
+      feature Pragma::Decorator::Type
+      feature Pragma::Decorator::Timestamp
+      feature Pragma::Decorator::Association
 
-          property :title
-          property :description
-          property :tags
-          property :published
+      property :title
+      property :description
+      property :tags
+      property :published
 
-          timestamp :created_at
-          timestamp :updated_at
+      timestamp :created_at
+      timestamp :updated_at
 
-          belongs_to :author, decorator: User::Decorator::Instance
-        end
-
-        class Collection < Pragma::Decorator::Base
-          feature Pragma::Decorator::Collection
-          feature Pragma::Decorator::Pagination
-        end
+      belongs_to :author, decorator: User::Decorator::Instance
       end
-    end
-  end
-end{% endhighlight %}
-  </div>
 
-  <div class="component contract">
-    <h2 class="component-title">
-      <small>Pragma::</small>Operation
-      <a href="https://github.com/pragmarb/pragma-operation"><i class="fa fa-github fa-fw"></i></a>
-    </h2>
-    <p class="component-subtitle">Endpoint encapsulation that doesn't get in the way.</p>
+      class Collection < Pragma::Decorator::Base
+      feature Pragma::Decorator::Collection
+      feature Pragma::Decorator::Pagination
+      end
+      end
+      end
+      end
+      end{% endhighlight %}
+    </div>
 
-    {%highlight ruby %}module API
-  module V1
-    module Article
+    <div class="col component contract">
+      <h2 class="component-title">
+        <small>Pragma::</small>Operation
+        <a href="https://github.com/pragmarb/pragma-operation"><i class="fa fa-github fa-fw"></i></a>
+      </h2>
+      <p class="component-subtitle">Endpoint encapsulation that doesn't get in the way.</p>
+
+      {%highlight ruby %}module API
+      module V1
+      module Article
       module Operation
-        class Index < Pragma::Operation::Index
-          self['pagination.default_per_page'] = 10
-          self['expand.enabled'] = false
-        end
-
-        class Show < Pragma::Operation::Show; end
-
-        class Create < Pragma::Operation::Create
-          step :send_newsletter!
-
-          def send_newsletter!(model:, **options)
-            if options['result.contract.default'].send_newsletter
-              SendArticleNewsletterJob.perform_later(model)
-            end
-          end
-        end
-
-        class Update < Pragma::Operation::Update; end
-
-        class Destroy < Pragma::Operation::Destroy; end
+      class Index < Pragma::Operation::Index
+      self['pagination.default_per_page'] = 10
+      self['expand.enabled'] = false
       end
-    end
-  end
-end{% endhighlight %}
+
+      class Show < Pragma::Operation::Show; end
+
+      class Create < Pragma::Operation::Create
+      step :send_newsletter!
+
+      def send_newsletter!(model:, **options)
+      if options['result.contract.default'].send_newsletter
+      SendArticleNewsletterJob.perform_later(model)
+      end
+      end
+      end
+
+      class Update < Pragma::Operation::Update; end
+
+      class Destroy < Pragma::Operation::Destroy; end
+      end
+      end
+      end
+      end{% endhighlight %}
+    </div>
   </div>
 </div>
 
