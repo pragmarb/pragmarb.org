@@ -1,18 +1,17 @@
 .btn {
   padding: 12.5px;
-  font-weight: bold;
+  font-weight: 500;
 }
 
-.btn-outline {
-  &.btn-outline-primary {
-    border: 1px solid $blue-lighter;
-    color: $blue-lighter;
-    font-weight: normal;
-    transition: none;
+.btn-outline-primary, .btn-outline-success, .btn-outline-warning, .btn-outline-danger {
+  transition: background-color 0.15s ease-in-out,
+              border-color 0.15s ease-in-out,
+              box-shadow 0.15s ease-in-out,
+              color 0.15s ease-in-out;
+}
 
-    &:hover {
-      background-color: $blue-lighter;
-      color: white;
-    }
+.btn-outline-warning {
+  &:hover {
+    color: $black;
   }
 }

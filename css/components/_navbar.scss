@@ -1,0 +1,13 @@
+.navbar-nav {
+  margin-top: 2.5px;
+
+  .nav-item {
+    &.active {
+      font-weight: 500;
+    }
+  }
+}
+
+.bg-dark {
+  background-color: $red !important;
+}

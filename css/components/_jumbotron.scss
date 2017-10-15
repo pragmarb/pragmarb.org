@@ -4,7 +4,11 @@
 
   .jumbotron-title {
     @include media-breakpoint-down(sm) {
-      font-size: $font-size-lg;
+      font-size: 2.25rem;
     }
+  }
+
+  .lead {
+    color: $gray-600;
   }
 }

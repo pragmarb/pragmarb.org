@@ -1,16 +1,18 @@
 $font-family-sans-serif: 'Libre Franklin';
 $font-family-monospace: 'Inconsolata';
 
-$headings-font-weight: 700;
+$headings-font-weight: 500;
 
 $blue: #0074D9;
 $blue-lighter: #0074D9;
 $snow: #fbfaf8;
 $green: #2ECC40;
-$red: #FF4136;
+$red: darken(#db3a34, 6.5%);
 
 $jumbotron-padding: 4rem;
 $jumbotron-bg: $snow;
 
 $code-font-size: 100%;
 $code-padding-x: 1rem;
+
+$navbar-brand-height: 3rem;

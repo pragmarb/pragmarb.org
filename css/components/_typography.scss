@@ -1,15 +1,23 @@
-@import url('https://fonts.googleapis.com/css?family=Libre+Franklin:400,700|Inconsolata');
+@import url('https://fonts.googleapis.com/css?family=Libre+Franklin:400,500,700|Inconsolata');
 
 pre {
   background-color: $gray-100;
-  padding: 10px 15px;
+  padding: 12.5px 15px;
   border-radius: $border-radius;
 
   &.code-inline {
     display: inline-block;
   }
+
+  &.code-darker {
+    background-color: $gray-200;
+  }
 }
 
 .lead {
   color: $gray-500;
+}
+
+.display-1, .display-2, .display-3, .display-4 {
+  font-weight: 500;
 }
