@@ -2,6 +2,12 @@
   &.table-comparison {
     text-align: center;
 
+    tbody {
+      display: block;
+      overflow-x: auto;
+      max-width: calc(100vw - 30px);
+    }
+
     td.yes {
       width: 10%;
       background-color: rgba($green, .25);
