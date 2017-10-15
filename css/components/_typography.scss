@@ -1,14 +1,15 @@
-@import url('https://fonts.googleapis.com/css?family=Libre+Franklin:400,700,800|Inconsolata');
+@import url('https://fonts.googleapis.com/css?family=Libre+Franklin:400,700|Inconsolata');
 
-body {
-  font-family: 'Libre Franklin', monospace;
+pre {
+  background-color: $gray-100;
+  padding: 10px 15px;
+  border-radius: $border-radius;
+
+  &.code-inline {
+    display: inline-block;
+  }
 }
 
-code {
-  font-family: 'Inconsolata', monospace;
-}
-
-p {
-  font-size: 1em;
-  line-height: 1.7em;
+.lead {
+  color: $gray-500;
 }

@@ -1,6 +1,16 @@
-$brand-blue-lighter: #0074D9;
-$brand-primary: #1c4874;
-$brand-red: #FF4136;
-$brand-blue-lightest: rgba(#7FDBFF, .1);
-$brand-snow: #fbfaf8;
-$brand-green: #2ECC40;
+$font-family-sans-serif: 'Libre Franklin';
+$font-family-monospace: 'Inconsolata';
+
+$headings-font-weight: 700;
+
+$blue: #0074D9;
+$blue-lighter: #0074D9;
+$snow: #fbfaf8;
+$green: #2ECC40;
+$red: #FF4136;
+
+$jumbotron-padding: 4rem;
+$jumbotron-bg: $snow;
+
+$code-font-size: 100%;
+$code-padding-x: 1rem;

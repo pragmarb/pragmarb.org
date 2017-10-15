@@ -21,515 +21,510 @@ description: An expressive, opinionated ecosystem for building beautiful RESTful
   </div>
 </div>
 
-<div class="container-fluid">
-  <div class="row">
-    <div class="col component policy">
-      <h2 class="component-title">
-        <small>Pragma::</small>Policy
-        <a href="https://github.com/pragmarb/pragma-policy"><i class="fa fa-github fa-fw"></i></a>
-      </h2>
-      <p class="component-subtitle">Resource authorization as simple as POROs.</p>
+<section class="section">
+  <div class="container container-lg">
+    <div class="row">
+      <div class="col component policy">
+        <h2 class="component-title">
+          <small>Pragma::</small>Policy
+          <a href="https://github.com/pragmarb/pragma-policy"><i class="fa fa-github fa-fw"></i></a>
+        </h2>
+        <p class="component-subtitle">Resource authorization as simple as POROs.</p>
 
-      {%highlight ruby %}module API
-      module V1
+        {%highlight ruby %}module API
+    module V1
       module Article
-      class Policy < Pragma::Policy::Base
-      class Scope < Pragma::Policy::Base::Scope
-      def resolve
-      scope.published.or(scope.written_by(user))
-      end
-      end
+        class Policy < Pragma::Policy::Base
+          class Scope < Pragma::Policy::Base::Scope
+            def resolve
+              scope.published.or(scope.written_by(user))
+            end
+          end
 
-      def show?
-      resource.published? || resource.author == user
-      end
+          def show?
+            resource.published? || resource.author == user
+          end
 
-      def create?
-      user.role == :author
-      end
+          def create?
+            user.role == :author
+          end
 
-      def update?
-      resource.author == user
-      end
+          def update?
+            resource.author == user
+          end
 
-      def destroy?
-      resource.author == user
+          def destroy?
+            resource.author == user
+          end
+        end
       end
+    end
+  end{% endhighlight %}
+      </div>
+
+      <div class="col component contract">
+        <h2 class="component-title">
+          <small>Pragma::</small>Contract
+          <a href="https://github.com/pragmarb/pragma-contract"><i class="fa fa-github fa-fw"></i></a>
+        </h2>
+        <p class="component-subtitle">Like form objects but, you know, for APIs.</p>
+
+        {%highlight ruby %}module API
+    module V1
+      module Article
+        module Contract
+          class Base < Pragma::Contract::Base
+            property :title, type: coercible(:string)
+            property :description, type: coercible(:string)
+            property :published, type: strict(:bool)
+            collection :tags
+
+            validation do
+              required(:title).filled(:str?)
+              required(:body) { filled? & str? & min_length?(300) }
+              required(:tags) { array? & each(:str?) & max_size?(10) }
+              required(:published).filled(:bool?)
+            end
+          end
+
+          class Create < Base
+            property :send_newsletter,
+              virtual: true,
+              type: strict(:bool)
+          end
+
+          class Update < Base; end
+        end
       end
-      end
-      end
-      end{% endhighlight %}
+    end
+  end{% endhighlight %}
+      </div>
+
     </div>
 
-    <div class="col component contract">
-      <h2 class="component-title">
-        <small>Pragma::</small>Contract
-        <a href="https://github.com/pragmarb/pragma-contract"><i class="fa fa-github fa-fw"></i></a>
-      </h2>
-      <p class="component-subtitle">Like form objects but, you know, for APIs.</p>
+    <div class="row">
+      <div class="col component policy">
+        <h2 class="component-title">
+          <small>Pragma::</small>Decorator
+          <a href="https://github.com/pragmarb/pragma-decorator"><i class="fa fa-github fa-fw"></i></a>
+        </h2>
+        <p class="component-subtitle">Powerful and elegant model presenters with a twist.</p>
 
-      {%highlight ruby %}module API
-      module V1
+        {%highlight ruby %}module API
+    module V1
       module Article
-      module Contract
-      class Base < Pragma::Contract::Base
-      property :title, type: coercible(:string)
-      property :description, type: coercible(:string)
-      property :published, type: strict(:bool)
-      collection :tags
+        module Decorator
+          class Instance < Pragma::Decorator::Base
+            feature Pragma::Decorator::Type
+            feature Pragma::Decorator::Timestamp
+            feature Pragma::Decorator::Association
 
-      validation do
-      required(:title).filled(:str?)
-      required(:body) { filled? & str? & min_length?(300) }
-      required(:tags) { array? & each(:str?) & max_size?(10) }
-      required(:published).filled(:bool?)
-      end
-      end
+            property :title
+            property :description
+            property :tags
+            property :published
 
-      class Create < Base
-      property :send_newsletter,
-      virtual: true,
-      type: strict(:bool)
-      end
+            timestamp :created_at
+            timestamp :updated_at
 
-      class Update < Base; end
+            belongs_to :author, decorator: User::Decorator::Instance
+          end
+
+          class Collection < Pragma::Decorator::Base
+            feature Pragma::Decorator::Collection
+            feature Pragma::Decorator::Pagination
+          end
+        end
       end
+    end
+  end{% endhighlight %}
+      </div>
+
+      <div class="col component contract">
+        <h2 class="component-title">
+          <small>Pragma::</small>Operation
+          <a href="https://github.com/pragmarb/pragma-operation"><i class="fa fa-github fa-fw"></i></a>
+        </h2>
+        <p class="component-subtitle">Endpoint encapsulation that doesn't get in the way.</p>
+
+        {%highlight ruby %}module API
+    module V1
+      module Article
+        module Operation
+          class Index < Pragma::Operation::Index
+            self['pagination.default_per_page'] = 10
+            self['expand.enabled'] = false
+          end
+
+          class Show < Pragma::Operation::Show; end
+
+          class Create < Pragma::Operation::Create
+            step :send_newsletter!
+
+            def send_newsletter!(model:, **options)
+              if options['result.contract.default'].send_newsletter
+                SendArticleNewsletterJob.perform_later(model)
+              end
+            end
+          end
+
+          class Update < Pragma::Operation::Update; end
+
+          class Destroy < Pragma::Operation::Destroy; end
+        end
       end
-      end
-      end{% endhighlight %}
+    end
+  end{% endhighlight %}
+      </div>
     </div>
-
   </div>
+</section>
 
-  <div class="row">
-    <div class="col component policy">
-      <h2 class="component-title">
-        <small>Pragma::</small>Decorator
-        <a href="https://github.com/pragmarb/pragma-decorator"><i class="fa fa-github fa-fw"></i></a>
-      </h2>
-      <p class="component-subtitle">Powerful and elegant model presenters with a twist.</p>
+<section class="section">
+  <div class="container container-sm text-center">
+    <h2 class="display-4 section-title">Simple. Powerful. Different.</h2>
+    <p class="lead">Put the fun back into API development.</p>
 
-      {%highlight ruby %}module API
-      module V1
-      module Article
-      module Decorator
-      class Instance < Pragma::Decorator::Base
-      feature Pragma::Decorator::Type
-      feature Pragma::Decorator::Timestamp
-      feature Pragma::Decorator::Association
+    <p>
+      Pragma was built out of frustration with existing API toolkits. None of them really allowed me to focus on the business logic
+      of my APIs, because I was constantly worrying about trivial tasks: how should I do pagination?
+      How should I present validation errors? The list goes on and on. Over the years, I have come
+      up with a standardized way of doing things, one that is flexible and elegant.
+    </p>
 
-      property :title
-      property :description
-      property :tags
-      property :published
+    <p>That's how Pragma was born.</p>
 
-      timestamp :created_at
-      timestamp :updated_at
+    <p>
+      Building a new API resource with Pragma takes literally five minutes, tests included.
+      Don't believe me? See it for yourself. By abstracting away all the usual chores around API
+      building, while still providing a powerful DSL for customization, Pragma lets you focus on
+      The Important Stuff.
+    </p>
 
-      belongs_to :author, decorator: User::Decorator::Instance
-      end
-
-      class Collection < Pragma::Decorator::Base
-      feature Pragma::Decorator::Collection
-      feature Pragma::Decorator::Pagination
-      end
-      end
-      end
-      end
-      end{% endhighlight %}
-    </div>
-
-    <div class="col component contract">
-      <h2 class="component-title">
-        <small>Pragma::</small>Operation
-        <a href="https://github.com/pragmarb/pragma-operation"><i class="fa fa-github fa-fw"></i></a>
-      </h2>
-      <p class="component-subtitle">Endpoint encapsulation that doesn't get in the way.</p>
-
-      {%highlight ruby %}module API
-      module V1
-      module Article
-      module Operation
-      class Index < Pragma::Operation::Index
-      self['pagination.default_per_page'] = 10
-      self['expand.enabled'] = false
-      end
-
-      class Show < Pragma::Operation::Show; end
-
-      class Create < Pragma::Operation::Create
-      step :send_newsletter!
-
-      def send_newsletter!(model:, **options)
-      if options['result.contract.default'].send_newsletter
-      SendArticleNewsletterJob.perform_later(model)
-      end
-      end
-      end
-
-      class Update < Pragma::Operation::Update; end
-
-      class Destroy < Pragma::Operation::Destroy; end
-      end
-      end
-      end
-      end{% endhighlight %}
-    </div>
-  </div>
-</div>
-
-<div class="section section-centered section-hug">
-  <div class="section-container">
-    <h2 class="section-title">Simple. Powerful. Different.</h2>
-    <p class="section-subtitle">Put the fun back into API development.</p>
-
-    <div class="section-content section-content-sm">
-      <p>
-        Pragma was built out of frustration with existing API toolkits. None of them really allowed me to focus on the business logic
-        of my APIs, because I was constantly worrying about trivial tasks: how should I do pagination?
-        How should I present validation errors? The list goes on and on. Over the years, I have come
-        up with a standardized way of doing things, one that is flexible and elegant.
-      </p>
-
-      <p>That's how Pragma was born.</p>
-
-      <p>
-        Building a new API resource with Pragma takes literally five minutes, tests included.
-        Don't believe me? See it for yourself. By abstracting away all the usual chores around API
-        building, while still providing a powerful DSL for customization, Pragma lets you focus on
-        The Important Stuff.
-      </p>
-    </div>
-
-    <div class="section-actions">
-      <a class="btn btn-outline" href="#">
+    <div class="mt-5">
+      <a class="btn btn-outline btn-outline-primary" href="#">
         Watch me build a blog with Pragma
         <i class="fa fa-arrow-right fa-fw"></i>
       </a>
     </div>
   </div>
-</div>
+</section>
 
-<div class="section section-centered section-bordered">
-  <div class="section-container">
-    <h2 class="section-title">Better by design.</h2>
-    <p class="section-subtitle">Wondering how we score against the competition?</p>
+<section class="section">
+  <div class="container text-center">
+    <h2 class="display-4 section-title">Better by design.</h2>
+    <p class="lead">Wondering how we score against the competition?</p>
 
-    <div class="section-content section-content-spaced">
-      <table class="table table-comparison">
-        <tbody>
-          <tr>
-            <th></th>
-            <th>Pragma</th>
-            <th>Grape</th>
-            <th>Rails::API</th>
-            <th>rocket_pants</th>
-            <th>JR</th>
-          </tr>
+    <table class="table table-bordered table-comparison">
+      <tbody>
+        <tr>
+          <th></th>
+          <th>Pragma</th>
+          <th>Grape</th>
+          <th>Rails::API</th>
+          <th>rocket_pants</th>
+          <th>JR</th>
+        </tr>
 
-          <tr>
-            <th class="feature-name">
-              Authorization
-            </th>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-          </tr>
+        <tr>
+          <th class="feature-name">
+            Authorization
+          </th>
+          <td class="yes">
+            <i class="fa fa-check check"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+          <td class="yes">
+            <i class="fa fa-check check"></i>
+          </td>
+        </tr>
 
-          <tr>
-            <th class="feature-name">
-              Generators
-            </th>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-          </tr>
+        <tr>
+          <th class="feature-name">
+            Generators
+          </th>
+          <td class="yes">
+            <i class="fa fa-check check"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+          <td class="yes">
+            <i class="fa fa-check check"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+        </tr>
 
-          <tr>
-            <th class="feature-name">
-              Collection rendering
-            </th>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-          </tr>
+        <tr>
+          <th class="feature-name">
+            Collection rendering
+          </th>
+          <td class="yes">
+            <i class="fa fa-check check"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+          <td class="yes">
+            <i class="fa fa-check check"></i>
+          </td>
+        </tr>
 
-          <tr>
-            <th class="feature-name">
-              Pagination
-            </th>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-          </tr>
+        <tr>
+          <th class="feature-name">
+            Pagination
+          </th>
+          <td class="yes">
+            <i class="fa fa-check check"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+          <td class="yes">
+            <i class="fa fa-check check"></i>
+          </td>
+        </tr>
 
-          <tr>
-            <th class="feature-name">
-              Commercial support
-            </th>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-          </tr>
+        <tr>
+          <th class="feature-name">
+            Commercial support
+          </th>
+          <td class="yes">
+            <i class="fa fa-check check"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+        </tr>
 
-          <tr>
-            <th class="feature-name">
-              Training
-            </th>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-          </tr>
+        <tr>
+          <th class="feature-name">
+            Training
+          </th>
+          <td class="yes">
+            <i class="fa fa-check check"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+        </tr>
 
-          <tr>
-            <th class="feature-name">
-              Built-in CRUD
-            </th>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-          </tr>
+        <tr>
+          <th class="feature-name">
+            Built-in CRUD
+          </th>
+          <td class="yes">
+            <i class="fa fa-check check"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+          <td class="yes">
+            <i class="fa fa-check check"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+          <td class="yes">
+            <i class="fa fa-check check"></i>
+          </td>
+        </tr>
 
-          <tr>
-            <th class="feature-name">
-              Rails template
-            </th>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-          </tr>
+        <tr>
+          <th class="feature-name">
+            Rails template
+          </th>
+          <td class="yes">
+            <i class="fa fa-check check"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+          <td class="yes">
+            <i class="fa fa-check check"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+        </tr>
 
-          <tr>
-            <th class="feature-name">
-              Coercion
-            </th>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-          </tr>
+        <tr>
+          <th class="feature-name">
+            Coercion
+          </th>
+          <td class="yes">
+            <i class="fa fa-check check"></i>
+          </td>
+          <td class="yes">
+            <i class="fa fa-check check"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+        </tr>
 
-          <tr>
-            <th class="feature-name">
-              Error handling
-            </th>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-          </tr>
+        <tr>
+          <th class="feature-name">
+            Error handling
+          </th>
+          <td class="yes">
+            <i class="fa fa-check check"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+          <td class="yes">
+            <i class="fa fa-check check"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+        </tr>
 
-          <tr>
-            <th class="feature-name">
-              Associations
-            </th>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-          </tr>
+        <tr>
+          <th class="feature-name">
+            Associations
+          </th>
+          <td class="yes">
+            <i class="fa fa-check check"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+          <td class="yes">
+            <i class="fa fa-check check"></i>
+          </td>
+        </tr>
 
-          <tr>
-            <th class="feature-name">
-              Versioning
-            </th>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-          </tr>
+        <tr>
+          <th class="feature-name">
+            Versioning
+          </th>
+          <td class="yes">
+            <i class="fa fa-check check"></i>
+          </td>
+          <td class="yes">
+            <i class="fa fa-check check"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+          <td class="yes">
+            <i class="fa fa-check check"></i>
+          </td>
+          <td class="yes">
+            <i class="fa fa-check check"></i>
+          </td>
+        </tr>
 
-          <tr>
-            <th class="feature-name">
-              Introspection
-            </th>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+        <tr>
+          <th class="feature-name">
+            Introspection
+          </th>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+          <td class="yes">
+            <i class="fa fa-check check"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+          <td class="no">
+            <i class="fa fa-times cross"></i>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-</div>
+</section>
 
-<div class="section section-bg section-minor section-bordered">
-  <div class="section-container section-container-sm">
-    <div class="split">
-      <div class="split-part" style="max-width: 650px">
-        <div class="section-content">
-          <h2 class="section-title section-title-hug">Hey, what's up?</h2>
+<section class="section section-minor section-bg">
+  <div class="container container-sm">
+    <div class="row">
+      <div class="col">
+        <h2 class="section-title">Hey, what's up?</h2>
 
-          <p>
-            My name is Alessandro and I'm the author of Pragma. I've been building APIs for the past
-            five years. Pragma was created out of love for the community — if you are using Pragma in
-            your project, have a feature request or just want to chat about software development,
-            writing or photography, drop me a line!
-          </p>
-        </div>
+        <p>
+          My name is Alessandro and I'm the author of Pragma. I've been building APIs for as far as
+          I remember. Well, maybe not that long, just for the past
+          five years. Pragma was created out of love for the community — if you are using Pragma in
+          your project, have a feature request or just want to chat about software development,
+          writing or photography, drop me a line!
+        </p>
       </div>
 
-      <div class="split-part" style="max-width: 150px">
-        <img src="avatar.jpg" class="img-circle">
+      <div class="col-3">
+        <img src="avatar.jpg" class="img-circle img-fluid">
       </div>
     </div>
   </div>
-</div>
+</section>
 
-<div class="footer-container">
-  <footer>
-    <p>Made with <i class="fa fa-heart heart fa-fw"></i> in the ethernal city. That's Rome.</p>
-  </footer>
-</div>
+<footer class="footer">
+  <p>Made with <i class="fa fa-heart heart fa-fw"></i> in the ethernal city. That's Rome.</p>
+</footer>

@@ -1,51 +1,27 @@
-.components {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  max-width: 1560px;
-  padding-top: 100px;
-  padding-left: 15px;
-  padding-right: 15px;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: -20px;
-}
-
 .component {
-  text-decoration: none;
-  color: inherit;
-  width: 100%;
-  max-width: 750px;
-  margin-left: 15px;
-  margin-right: 15px;
   margin-bottom: 20px;
-}
 
-.component-title {
-  margin-top: 0;
-  margin-bottom: 0;
-  font-size: 2em;
+  .component-title {
+    margin-bottom: .25rem;
 
-  & > small {
-    font-size: 1em;
-    font-weight: normal;
-    color: $gray;
-  }
-
-  & > a {
-    text-decoration: none;
-    color: $gray-dark;
-    transition: color .15s ease-in-out;
-
-    &:hover {
-      color: black;
+    small {
+      color: $gray-400;
+      font-size: inherit;
     }
   }
-}
 
-.component-subtitle {
-  color: $gray-darker;
-  font-size: 125%;
-  margin-top: 0;
-  margin-bottom: 0;
+  a {
+    color: rgba($black, .5);
+    transition: color .25s ease-in-out;
+
+    &:hover {
+      color: rgba($black, 1);
+    }
+  }
+
+  .component-subtitle {
+    font-size: $font-size-lg;
+    color: $gray-500;
+    margin-top: 0;
+  }
 }

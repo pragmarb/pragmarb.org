@@ -1,39 +1,21 @@
 .table {
-  border-collapse: collapse;
-  width: 100%;
-
-  td, th, tr {
-    padding: 10px;
-    border: 1px solid $gray;
-  }
-
-  th {
-    font-weight: normal;
-  }
-
   &.table-comparison {
     text-align: center;
 
-    tbody {
-      display: block;
-      max-width: calc(100vw - 30px);
-      overflow-x: auto;
-    }
-
-    .feature-name {
-      width: 20%;
-    }
-
     td.yes {
       width: 10%;
-      background-color: rgba($brand-green, .25);
-      color: $brand-green;
+      background-color: rgba($green, .25);
+      color: $green;
     }
 
     td.no {
       width: 10%;
-      background-color: rgba($brand-red, .25);
-      color: $brand-red;
+      background-color: rgba($red, .25);
+      color: $red;
+    }
+
+    .feature-name {
+      width: 20%;
     }
   }
 }

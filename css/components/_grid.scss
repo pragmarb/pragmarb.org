@@ -1,0 +1,9 @@
+.container {
+  &.container-sm {
+    max-width: 800px;
+  }
+
+  &.container-lg {
+    max-width: 1500px;
+  }
+}

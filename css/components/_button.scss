@@ -1,27 +1,17 @@
 .btn {
-  border-radius: 4px;
-  padding: 15px;
-  text-decoration: none;
-  display: inline-block;
+  padding: 12.5px;
+  font-weight: bold;
+}
 
-  &.btn-primary {
-    background-color: $brand-blue-lighter;
-    color: white;
-    text-align: center;
-    font-weight: bold;
-    transition: background-color .1s ease-in-out;
-
-    &:hover {
-      background-color: darken($brand-blue-lighter, 6.25%);
-    }
-  }
-
-  &.btn-outline {
-    border: 1px solid $brand-blue-lighter;
-    color: $brand-blue-lighter;
+.btn-outline {
+  &.btn-outline-primary {
+    border: 1px solid $blue-lighter;
+    color: $blue-lighter;
+    font-weight: normal;
+    transition: none;
 
     &:hover {
-      background-color: $brand-blue-lighter;
+      background-color: $blue-lighter;
       color: white;
     }
   }

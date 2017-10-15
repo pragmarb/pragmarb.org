@@ -1,41 +1,21 @@
 ---
 ---
 
-@import "vendor/syntax";
-
 @import "_settings";
 
-@import url('https://fonts.googleapis.com/css?family=Libre+Franklin:400,700|Inconsolata');
-
-$font-family-sans-serif: 'Libre Franklin';
-$font-family-monospace: 'Inconsolata';
-$headings-font-weight: 700;
-$jumbotron-padding: 4rem;
-$jumbotron-bg: $brand-snow;
-
-$blue: #0074D9;
-$code-font-size: 100%;
-$code-padding-x: 1rem;
+@import "vendor/syntax";
 
 @import "../node_modules/bootstrap/scss/bootstrap-reboot";
 @import "../node_modules/bootstrap/scss/bootstrap";
 @import "../node_modules/bootstrap/scss/bootstrap-grid";
 
-pre {
-  background-color: #eee;
-  padding: 10px 15px;
-  border-radius: $border-radius;
-
-  &.code-inline {
-    display: inline-block;
-  }
-}
-
-.jumbotron {
-  border-bottom: 1px solid $gray-100;
-}
-
-.btn {
-  padding: 12.5px;
-  font-weight: bold;
-}
+@import "components/table";
+@import "components/icon";
+@import "components/image";
+@import "components/typography";
+@import "components/jumbotron";
+@import "components/button";
+@import "components/component";
+@import "components/section";
+@import "components/grid";
+@import "components/footer";
