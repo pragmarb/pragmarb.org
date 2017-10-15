@@ -183,7 +183,7 @@ end{% endhighlight %}
   </div>
 </div>
 
-<div class="section section-centered">
+<div class="section section-centered section-hug">
   <div class="section-container">
     <h2 class="section-title">Simple. Powerful. Different.</h2>
     <p class="section-subtitle">Put the fun back into API development.</p>
@@ -215,12 +215,12 @@ end{% endhighlight %}
   </div>
 </div>
 
-<div class="section section-centered">
+<div class="section section-centered section-bordered">
   <div class="section-container">
     <h2 class="section-title">Better by design.</h2>
     <p class="section-subtitle">Wondering how we score against the competition?</p>
 
-    <div class="section-content">
+    <div class="section-content section-content-spaced">
       <table class="table table-comparison">
         <tbody>
           <tr>
@@ -229,7 +229,7 @@ end{% endhighlight %}
             <th>Grape</th>
             <th>Rails::API</th>
             <th>rocket_pants</th>
-            <th>Trailblazer</th>
+            <th>JR</th>
           </tr>
 
           <tr>
@@ -311,8 +311,8 @@ end{% endhighlight %}
             <td class="no">
               <i class="fa fa-times cross"></i>
             </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
+            <td class="yes">
+              <i class="fa fa-check check"></i>
             </td>
           </tr>
 
@@ -331,27 +331,6 @@ end{% endhighlight %}
             </td>
             <td class="no">
               <i class="fa fa-times cross"></i>
-            </td>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-          </tr>
-
-          <tr>
-            <th class="feature-name">
-              API-specific
-            </th>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
             </td>
             <td class="no">
               <i class="fa fa-times cross"></i>
@@ -374,29 +353,8 @@ end{% endhighlight %}
             <td class="no">
               <i class="fa fa-times cross"></i>
             </td>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-          </tr>
-
-          <tr>
-            <th class="feature-name">
-              Actively maintained
-            </th>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
             <td class="no">
               <i class="fa fa-times cross"></i>
-            </td>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
             </td>
           </tr>
 
@@ -410,20 +368,20 @@ end{% endhighlight %}
             <td class="no">
               <i class="fa fa-times cross"></i>
             </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
+            <td class="yes">
+              <i class="fa fa-check check"></i>
             </td>
             <td class="no">
               <i class="fa fa-times cross"></i>
             </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
+            <td class="yes">
+              <i class="fa fa-check check"></i>
             </td>
           </tr>
 
           <tr>
             <th class="feature-name">
-              Starter Rails app
+              Rails template
             </th>
             <td class="yes">
               <i class="fa fa-check check"></i>
@@ -439,27 +397,6 @@ end{% endhighlight %}
             </td>
             <td class="no">
               <i class="fa fa-times cross"></i>
-            </td>
-          </tr>
-
-          <tr>
-            <th class="feature-name">
-              Separations of concerns
-            </th>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
             </td>
           </tr>
 
@@ -470,6 +407,48 @@ end{% endhighlight %}
             <td class="yes">
               <i class="fa fa-check check"></i>
             </td>
+            <td class="yes">
+              <i class="fa fa-check check"></i>
+            </td>
+            <td class="no">
+              <i class="fa fa-times cross"></i>
+            </td>
+            <td class="no">
+              <i class="fa fa-times cross"></i>
+            </td>
+            <td class="no">
+              <i class="fa fa-times cross"></i>
+            </td>
+          </tr>
+
+          <tr>
+            <th class="feature-name">
+              Error handling
+            </th>
+            <td class="yes">
+              <i class="fa fa-check check"></i>
+            </td>
+            <td class="no">
+              <i class="fa fa-times cross"></i>
+            </td>
+            <td class="no">
+              <i class="fa fa-times cross"></i>
+            </td>
+            <td class="yes">
+              <i class="fa fa-check check"></i>
+            </td>
+            <td class="no">
+              <i class="fa fa-times cross"></i>
+            </td>
+          </tr>
+
+          <tr>
+            <th class="feature-name">
+              Associations
+            </th>
+            <td class="yes">
+              <i class="fa fa-check check"></i>
+            </td>
             <td class="no">
               <i class="fa fa-times cross"></i>
             </td>
@@ -486,34 +465,34 @@ end{% endhighlight %}
 
           <tr>
             <th class="feature-name">
-              Automatic error handling
+              Versioning
             </th>
+            <td class="yes">
+              <i class="fa fa-check check"></i>
+            </td>
             <td class="yes">
               <i class="fa fa-check check"></i>
             </td>
             <td class="no">
               <i class="fa fa-times cross"></i>
             </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
+            <td class="yes">
+              <i class="fa fa-check check"></i>
             </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
-            </td>
-            <td class="no">
-              <i class="fa fa-times cross"></i>
+            <td class="yes">
+              <i class="fa fa-check check"></i>
             </td>
           </tr>
 
           <tr>
             <th class="feature-name">
-              Association expansion
+              Introspection
             </th>
-            <td class="yes">
-              <i class="fa fa-check check"></i>
-            </td>
             <td class="no">
               <i class="fa fa-times cross"></i>
+            </td>
+            <td class="yes">
+              <i class="fa fa-check check"></i>
             </td>
             <td class="no">
               <i class="fa fa-times cross"></i>
@@ -531,8 +510,31 @@ end{% endhighlight %}
   </div>
 </div>
 
+<div class="section section-bg section-minor section-bordered">
+  <div class="section-container section-container-sm">
+    <div class="split">
+      <div class="split-part" style="max-width: 650px">
+        <div class="section-content">
+          <h2 class="section-title section-title-hug">Hey, what's up?</h2>
+
+          <p>
+            My name is Alessandro and I'm the author of Pragma. I've been building APIs for the past
+            five years. Pragma was created out of love for the community — if you are using Pragma in
+            your project, have a feature request or just want to chat about software development,
+            writing or photography, drop me a line!
+          </p>
+        </div>
+      </div>
+
+      <div class="split-part" style="max-width: 150px">
+        <img src="avatar.jpg" class="img-circle">
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="footer-container">
   <footer>
-    <p>Made with <i class="fa fa-heart heart fa-fw"></i> in Rome.</p>
+    <p>Made with <i class="fa fa-heart heart fa-fw"></i> in the ethernal city. That's Rome.</p>
   </footer>
 </div>
