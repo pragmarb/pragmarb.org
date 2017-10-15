@@ -9,6 +9,7 @@
     tbody {
       display: block;
       overflow-x: auto;
+      max-width: calc(100vw - 30px);
     }
 
     td.yes {
