@@ -10,6 +10,7 @@
       display: block;
       overflow-x: auto;
       max-width: calc(100vw - 30px);
+      -webkit-overflow-scrolling: touch;
     }
 
     td.yes {
