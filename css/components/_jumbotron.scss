@@ -10,5 +10,11 @@
 
   .lead {
     color: $gray-600;
+    margin-bottom: 0;
+  }
+
+  &.jumbotron-secondary {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
   }
 }
