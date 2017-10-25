@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Libre+Franklin:400,500,700|Inconsolata');
+@import url('https://fonts.googleapis.com/css?family=Libre+Franklin:400,500,600|Inconsolata');
 
 pre {
   background-color: $gray-100;
@@ -20,4 +20,8 @@ pre {
 
 .display-1, .display-2, .display-3, .display-4 {
   font-weight: 500;
+}
+
+strong {
+  font-weight: 600;
 }
