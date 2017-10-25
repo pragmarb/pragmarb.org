@@ -18,11 +18,11 @@
           <a class="nav-link" href="#">Features</a>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle {% if page.path == "guides.html" %}active{% endif %}" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <a class="nav-link dropdown-toggle {% if page.path contains "guides" %}active{% endif %}" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Docs
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-            <a class="dropdown-item {% if page.path == "guides.html" %}active{% endif %}" href="{% link guides.html %}">Guides</a>
+            <a class="dropdown-item {% if page.path contains "guides" %}active{% endif %}" href="{% link guides.html %}">Guides</a>
             <a class="dropdown-item" href="#">API</a>
           </div>
         </li>
