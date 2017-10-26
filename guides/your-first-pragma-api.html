@@ -25,22 +25,22 @@ description: Learn how to build beautiful RESTful APIs with Pragma.
           <a class="nav-link" href="#bootstrapping-the-app">Bootstrapping the app</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Creating resources</a>
+          <a class="nav-link" href="#creating-resources">Creating resources</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Validating input</a>
+          <a class="nav-link" href="#accepting-input">Accepting input</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Presenting data</a>
+          <a class="nav-link" href="#presenting-data">Presenting data</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Restricting access</a>
+          <a class="nav-link" href="#restricting-access">Restricting access</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Putting it all together</a>
+          <a class="nav-link" href="#putting-it-all-together">Putting it all together</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">The next steps</a>
+          <a class="nav-link" href="#the-next-steps">The next steps</a>
         </li>
       </ul>
     </div>
@@ -107,8 +107,127 @@ description: Learn how to build beautiful RESTful APIs with Pragma.
       <p>
         <pre><code>$ git clone https://github.com/pragmarb/pragma-rails-starter.git blog</code></pre>
       </p>
-      <p>This will create a Pragma app ready to go in the <code>blog</code> directory. Just enter the
-      directory and take a look at the readme to learn about all the tools it comes with.</p>
+      <p>
+        This will create a Pragma app ready to go in the <code>blog</code> directory. Just enter the
+        directory and take a look at the readme to learn about all the tools it comes with.
+      </p>
+      <p>
+        Since we need our API to persist data, we'll create an <code>Article</code> model which we
+        will build an API for:
+      </p>
+      <pre><code>$ rails g model Article title body:text published:boolean
+$ rails db:migrate</code></pre>
+
+      <h2 class="display-5" id="creating-resources">Creating resources</h2>
+      <p>
+        A Pragma resource is nothing more than data which can be operated on, just like a REST
+        resource. On a technical level, each resource will have its own namespace and contain
+        operations, decorators, contracts and a policy. All of these are optional, but usually
+        you'll want to have all of them.
+      </p>
+      <p>
+        In a Rails Pragma app, your resources will be stored in <code>app/resources</code>. They
+        will usually map to a model, but not always. Pragma::Rails also provides a generator for
+        creating a new resource, complete with its own system tests. Think of it as <code>rails g scaffold</code>
+        for Pragma. Try this:
+      </p>
+      <pre><code>$ rails g pragma:resource article</code></pre>
+      <p>This will generate the following file structure:</p>
+      <pre><code>app/resources
+└── api
+    └── v1
+        ├── article
+        │   ├── contract
+        │   │   ├── base.rb
+        │   │   ├── create.rb
+        │   │   └── update.rb
+        │   ├── decorator
+        │   │   ├── collection.rb
+        │   │   ├── instance.rb
+        │   ├── operation
+        │   │   ├── index.rb
+        │   │   ├── show.rb
+        │   │   ├── create.rb
+        │   │   └── update.rb
+        │   │   └── destroy.rb
+        │   └── policy.rb
+spec/requests
+└── api
+    └── v1
+        ├── articles_spec.rb</code></pre>
+      <p>It will also edit your <code>config/routes.rb</code> to create CRUD routes for the resource.</p>
+      <p>
+        You are encouraged to explore the generated files, even though most of them will be
+        empty at this point. You have created your first resource which is directly mapped to a
+        model, but it doesn't accept any input or present any output yet. It's also publicly
+        accessible, meaning everyone will be able to see all articles, even the unpublished ones.
+      </p>
+      <p>Let's see how we can fix all of that!</p>
+
+      <h2 class="display-5" id="accepting-input">Accepting input</h2>
+      <p>
+        Let's start with the basics: creating a new article. What we want to do is get the following
+        cURL request to work properly:
+      </p>
+      <pre><code>curl 'https://our-api.example.com/api/v1/articles' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "title": "Hello, world!",
+    "body": "This is my first article. How cool is this?"
+  }'</code></pre>
+      <p>
+        In order to do that, we will edit our resource's <em>contract</em>. A contract is a class
+        whose purpose is to validate the input to the resource's API endpoints and persist it to the
+        underlying model. Contracts in Pragma are built on top of
+        <a href="http://trailblazer.to/gems/reform/">Reform</a>.
+      </p>
+      <p>
+        For our purpose, we will open the <code>API::V1::Article::Contract::Base</code> class and
+        edit it like this:
+      </p>
+      {% highlight ruby %}module API
+  module V1
+    module Article
+      module Contract
+        class Base < Pragma::Contract::Base
+          property :title, type: coercible(:string)
+          property :body, type: coercible(:string)
+
+          validation do
+            required(:title).filled
+            required(:body).filled(min_length?: 100)
+          end
+        end
+      end
+    end
+  end
+end
+{% endhighlight %}
+      <p>
+        You might not believe it, but that's the only thing you need to do to get that cURL
+        request to pass. Try it if you don't believe me!
+      </p>
+      <p>
+        Let's dissect what that code means though. There are two parts to a contract:
+      </p>
+      <ol>
+        <li>
+          The contract's <em>properties</em> or attributes, which in turn determine which aspects of
+          the resource can be manipulated through the API. You can see that we are also coercing
+          both our properties to strings, so that we can safely operate on them.
+        </li>
+        <li>
+          The contract's <em>validations</em>. In our case, we want both the title and the body to
+          be filled, and the body to be at least 100 characters in length. If any of these validations
+          fail, the article will not be persisted and the API will respond with the 422 Unprocessable
+          Entity status code and a list of validation errors.
+        </li>
+      </ol>
+      <p>
+        Coercion is <a href="http://dry-rb.org/gems/dry-types/">Dry::Types</a>, while validation is
+        provided by <a href="http://dry-rb.org/gems/dry-types/">Dry::Validation</a>.
+      </p>
     </div>
   </div>
 </div>
