@@ -100,23 +100,30 @@ description: Learn how to build beautiful RESTful APIs with Pragma.
       </p>
 
       <h2 class="display-5" id="bootstrapping-the-app">Bootstrapping the app</h2>
+
       <p>
         First things first. To create a new Rails app with Pragma support, just clone our starter
         repository:
       </p>
+
       <p>
         <pre><code>$ git clone https://github.com/pragmarb/pragma-rails-starter.git blog</code></pre>
       </p>
+
       <p>
         This will create a Pragma app ready to go in the <code>blog</code> directory. Just enter the
         directory and take a look at the readme to learn about all the tools it comes with.
       </p>
+
       <p>
         Since we need our API to persist data, we'll create an <code>Article</code> model which we
         will build an API for:
       </p>
-      <pre><code>$ rails g model Article title body:text published:boolean
+
+      <p>
+        <pre><code>$ rails g model Article title body:text published:boolean
 $ rails db:migrate</code></pre>
+      </p>
 
       <h2 class="display-5" id="creating-resources">Creating resources</h2>
       <p>
@@ -133,7 +140,7 @@ $ rails db:migrate</code></pre>
       </p>
       <pre><code>$ rails g pragma:resource article</code></pre>
       <p>This will generate the following file structure:</p>
-      <pre><code>app/resources
+      <p><pre><code>app/resources
 └── api
     └── v1
         ├── article
@@ -154,7 +161,7 @@ $ rails db:migrate</code></pre>
 spec/requests
 └── api
     └── v1
-        ├── articles_spec.rb</code></pre>
+        ├── articles_spec.rb</code></pre></p>
       <p>It will also edit your <code>config/routes.rb</code> to create CRUD routes for the resource.</p>
       <p>
         You are encouraged to explore the generated files, even though most of them will be
@@ -169,13 +176,13 @@ spec/requests
         Let's start with the basics: creating a new article. What we want to do is get the following
         cURL request to work properly:
       </p>
-      <pre><code>curl 'https://our-api.example.com/api/v1/articles' \
+      <p><pre><code>curl 'https://our-api.example.com/api/v1/articles' \
   -X POST \
   -H 'Content-Type: application/json' \
   -d '{
     "title": "Hello, world!",
     "body": "This is my first article. How cool is this?"
-  }'</code></pre>
+      }'</code></pre></p>
       <p>
         In order to do that, we will edit our resource's <em>contract</em>. A contract is a class
         whose purpose is to validate the input to the resource's API endpoints and persist it to the
@@ -186,7 +193,7 @@ spec/requests
         For our purpose, we will open the <code>API::V1::Article::Contract::Base</code> class and
         edit it like this:
       </p>
-      {% highlight ruby %}module API
+      <p>{% highlight ruby %}module API
   module V1
     module Article
       module Contract
@@ -202,8 +209,7 @@ spec/requests
       end
     end
   end
-end
-{% endhighlight %}
+end{% endhighlight %}</p>
       <p>
         You might not believe it, but that's the only thing you need to do to get that cURL
         request to pass. Try it if you don't believe me!
