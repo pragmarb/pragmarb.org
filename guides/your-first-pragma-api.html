@@ -236,6 +236,66 @@ end{% endhighlight %}</p>
         Coercion is provided by <a href="http://dry-rb.org/gems/dry-types/">Dry::Types</a>, while
         validation is provided by <a href="http://dry-rb.org/gems/dry-types/">Dry::Validation</a>.
       </p>
+
+      <h2 class="display-5" id="presenting-data">Presenting data</h2>
+      <p>
+        Now we can create articles! However, if you try calling the endpoint above, you'll just get
+        an empty JSON object back:
+      </p>
+      <p>
+        {% highlight json %}{}{%endhighlight%}
+      </p>
+      <p>What's going on here? Well, the decorator for your article resource is empty.</p>
+      <p>
+        Decorators are built on top of
+        <a href="https://github.com/trailblazer/representable">Representable</a>. They take your
+        Ruby object and represent them as JSON. Decorators provide conditional properties,
+        association expansion, sensible type casting and many other features.
+      </p>
+      <p>
+        Each resource usually has two decorators: one for presenting the collection of resources
+        and one for presenting a single instance, named respectively <code>Collection</code> and
+        <code>Instance</code>.
+      </p>
+      <p>
+        Let's edit the instance decorator for your article resource, so that we can present all of
+        its properties:
+      </p>
+      <p>{% highlight ruby %}module API
+  module V1
+    module Article
+      module Decorator
+        class Instance < Pragma::Decorator::Base
+          feature Pragma::Decorator::Timestamp
+
+          property :id
+          property :title
+          property :body
+          timestamp :created_at
+          timestamp :updated_at
+        end
+      end
+    end
+  end
+end
+{% endhighlight %}</p>
+      <p>If you try to create the article again, it will look much better now:</p>
+      <p>
+        {% highlight json %}{
+  "id": 1,
+  "title": "Hello, world!",
+  "body": "This is my first article. How cool is this?",
+  "created_at": 1509238434,
+  "updated_at": 1509238434
+}{%endhighlight%}
+      </p>
+      <p>
+        As you can see, you can present a property as-is with <code>property</code>.
+        <code>timestamp</code>, on the other hand, is a helper that takes a datetime object and
+        converts it into a UNIX timestamp, which is the preferred method to present times in an API.
+        There are many such helpers: for a comprehensive list, take a look at
+        <a href="https://github.com/pragmarb/pragma-decorator">Decorator's documentation</a>.
+      </p>
     </div>
   </div>
 </div>
