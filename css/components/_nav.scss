@@ -1,5 +1,10 @@
 .nav {
-  .nav-link.active {
-    font-weight: 600;
+  .nav-link {
+    padding-left: 0;
+    padding-right: 0;
+
+    &.active {
+      font-weight: 600;
+    }
   }
 }
