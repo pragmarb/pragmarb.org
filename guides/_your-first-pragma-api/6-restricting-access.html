@@ -108,6 +108,103 @@ end
 </p>
 
 <p>
+  If we try to access the articles at <code>/api/v1/articles</code> now, we'll get an empty
+  collection again:
+</p>
+
+<p>{%highlight json%}{
+  "data": [],
+  "total_entries": 0,
+  "per_page": 30,
+  "total_pages": 1,
+  "previous_page": null,
+  "current_page": 1,
+  "next_page": null,
+  "type": "list"
+}{%endhighlight%}</p>
+
+<p>
+  This is because the only article we have is unpublished and we're not the authors. Direct access
+  won't work either:
+</p>
+
+<p><pre><code>$ curl 'http://localhost:5000/api/v1/articles/be9da202-fc8d-44e6-a8f7-54b1398cfad0'</code></pre></p>
+
+<p>This will respond with a <code>403 Forbidden</code> and the following JSON:</p>
+
+<p>{% highlight json %}{
+  "error_type": "forbidden",
+  "error_message": "You are not authorized to access this resource."
+}{% endhighlight %}</p>
+
+<p>
+  Let's see if authenticating as the article's author, by passing the <code>X-Author-Id</code>
+  header, gives us access:
+</p>
+
+<p>
+  <pre><code>$ curl 'http://localhost:5000/api/v1/articles' \
+  -H 'X-Author-Id: bad87963-d8b2-408a-876e-c84740121aed'</code></pre>
+</p>
+
+<p>We're in again:</p>
+
+<p>{% highlight json %} {
+  "data": [{
+    "type": "article",
+    "id": "be9da202-fc8d-44e6-a8f7-54b1398cfad0",
+    "title": "Hello, world!",
+    "body": "This is my first article. How cool is this?",
+    "published": false,
+    "author": "bad87963-d8b2-408a-876e-c84740121aed",
+    "created_at": 1509238434,
+    "updated_at": 1509238434
+  }],
+  "total_entries": 1,
+  "per_page": 30,
+  "total_pages": 1,
+  "previous_page": null,
+  "current_page": 1,
+  "next_page": null,
+  "type": "list"
+}{% endhighlight %}</p>
+
+<p>
+  If we publish our article by updating the <code>published</code> property to <code>true</code> we
+  won't need to authenticate anymore. Let's run the following in the Rails console:
+</p>
+
+<p>{% highlight ruby %}Article.first.update! published: true{% endhighlight %}</p>
+
+Now we'll attempt access as guests once more:
+
+<p>
+  <pre><code>$ curl 'http://localhost:5000/api/v1/articles'</code></pre>
+</p>
+
+This time, it works perfectly:
+
+<p>{% highlight json %} {
+  "data": [{
+    "type": "article",
+    "id": "be9da202-fc8d-44e6-a8f7-54b1398cfad0",
+    "title": "Hello, world!",
+    "body": "This is my first article. How cool is this?",
+    "published": false,
+    "author": "bad87963-d8b2-408a-876e-c84740121aed",
+    "created_at": 1509238434,
+    "updated_at": 1509238434
+  }],
+  "total_entries": 1,
+  "per_page": 30,
+  "total_pages": 1,
+  "previous_page": null,
+  "current_page": 1,
+  "next_page": null,
+  "type": "list"
+}{% endhighlight %}</p>
+
+<p>
   These are the basics of policies. There's nothing terribly fancy about them, but you are
   encouraged to take a look at <a href="https://github.com/pragmarb/pragma-policy">the GitHub
   repo</a> and play around with the code.

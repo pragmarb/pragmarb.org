@@ -1,0 +1,96 @@
+<h2 class="display-5" id="accepting-input">Accepting input</h2>
+
+<p>
+  Let's start with the basics: creating a new article. What we want to do is get the following
+  cURL request to work properly:
+</p>
+
+<p>
+  <pre><code>curl 'https://our-api.example.com/api/v1/articles' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "title": "Hello, world!",
+    "body": "This is my first article. How cool is this?",
+    "author": "bad87963-d8b2-408a-876e-c84740121aed"
+  }'</code></pre>
+</p>
+
+<p>
+  In order to do that, we will edit our resource's <em>contract</em>. A contract is a class
+  whose purpose is to validate the input to the resource's API endpoints and persist it to the
+  underlying model.
+</p>
+
+<p>
+  For our purpose, we will open the <code>API::V1::Article::Contract::Base</code> class and
+  edit it like this:
+</p>
+
+<p>{% highlight ruby %}module API
+  module V1
+    module Article
+      module Contract
+        class Base < Pragma::Contract::Base
+          property :title, type: coercible(:string)
+          property :body, type: coercible(:string)
+          property :published, type: form(:bool)
+          property :author
+
+          validation do
+            required(:title).filled
+            required(:body).filled(min_length?: 100)
+            required(:author).filled
+          end
+
+          def author=(val)
+            super ::Author.find_by(id: val)
+          end
+        end
+      end
+    end
+  end
+end{% endhighlight %}</p>
+
+<p>
+  You might not believe it, but that's the only thing you need to do to get that cURL request to
+  pass. Try it if you don't believe me!
+</p>
+
+<p>
+  Let's dissect what that code means though. There are three parts to our contract:
+</p>
+
+<ol>
+  <li>
+    The contract's <em>properties</em> or attributes, which in turn determine which aspects of
+    the resource can be manipulated through the API. You can see that we are also coercing
+    both our properties to strings, so that we can safely operate on them.
+  </li>
+
+  <li>
+    The contract's <em>validations</em>. In our case, we want title, body and author to be filled,
+    and the body to be at least 100 characters in length. If any of these validations fail, the
+    article will not be persisted and the API will respond with the <code>422 Unprocessable
+    Entity</code> status code and a list of huamn-readable validation errors, organized by property.
+  </li>
+
+  <li>
+    The <code>author=</code> method. This is a custom setter/coercion method that will be used to
+    convert the author's UUID into the relevant <code>Author</code> object. This serves two
+    purposes: first, it allows us to use <code>author</code> both when presenting output and when
+    accepting input, and second, it lets us easily validate that a valid author ID has been passed.
+    In case you're wondering, we use <code>find_by</code> instead of <code>find</code> because we
+    want to fail gracefully in case the ID is not valid.
+  </li>
+</ol>
+
+<p>
+  Contracts are built on top of <a href="http://trailblazer.to/gems/reform/">Reform</a>, so whatever
+  you can do with Reform, you can do with contracts. Coercion is provided by
+  <a href="http://dry-rb.org/gems/dry-types/">Dry::Types</a>, while validation is provided by
+  <a href="http://dry-rb.org/gems/dry-types/">Dry::Validation</a>. We urge you to read the
+  documentation of all these gems and of
+  <a href="https://github.com/pragmarb/pragma-contract">Pragma::Contract</a> to learn how to make
+  the most of them.
+</p>

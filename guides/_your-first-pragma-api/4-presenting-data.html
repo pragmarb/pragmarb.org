@@ -21,10 +21,22 @@ Article.create!(
 ){%endhighlight%}</p>
 
 
-<p>Now, let's try to access our article:</p>
+<p>Now, let's try to access our articles:</p>
 
-<pre><code>$ curl 'http://localhost:5000/api/v1/articles/be9da202-fc8d-44e6-a8f7-54b1398cfad0'
-{}</code></pre>
+<pre><code>$ curl 'http://localhost:5000/api/v1/articles/'</code></pre>
+
+<p>Here's what we get:</p>
+
+<p>{%highlight json%}{
+  "data": [],
+  "total_entries": 0,
+  "per_page": 30,
+  "total_pages": 1,
+  "previous_page": null,
+  "current_page": 1,
+  "next_page": null,
+  "type": "list"
+}{%endhighlight%}</p>
 
 <div class="alert alert-info" role="alert">
   <strong>Note:</strong> You might have noticed that, while Rails' default is to use incremental
@@ -51,6 +63,7 @@ Article.create!(
         class Instance < Pragma::Decorator::Base
           feature Pragma::Decorator::Association
           feature Pragma::Decorator::Timestamp
+          feature Pragma::Decorator::Type
 
           property :id
           property :title
@@ -66,19 +79,6 @@ Article.create!(
   end
 end {% endhighlight %}</p>
 
-<p>If you try to access the article again, it will look much better now:</p>
-
-<p>
-{% highlight json %}{
-  "id": "be9da202-fc8d-44e6-a8f7-54b1398cfad0",
-  "title": "Hello, world!",
-  "body": "This is my first article. How cool is this?",
-  "author": "bad87963-d8b2-408a-876e-c84740121aed",
-  "created_at": 1509238434,
-  "updated_at": 1509238434
-}{%endhighlight%}
-</p>
-
 <p>
   As you can see, you can present a property as-is with <code>property</code>. We have also renamed
   our <code>author_id</code> property to <code>author</code>, so that it can be easily expanded in
@@ -88,6 +88,55 @@ end {% endhighlight %}</p>
 <p>
   <code>timestamp</code>, on the other hand, is a helper that takes a datetime object and
   converts it into a UNIX timestamp, which is the preferred method to present times in an API.
+</p>
+
+<p>If you try to access the articles again, it will look much better now:</p>
+
+<p>{% highlight json %} {
+  "data": [{
+    "type": "article",
+    "id": "be9da202-fc8d-44e6-a8f7-54b1398cfad0",
+    "title": "Hello, world!",
+    "body": "This is my first article. How cool is this?",
+    "published": false,
+    "author": "bad87963-d8b2-408a-876e-c84740121aed",
+    "created_at": 1509238434,
+    "updated_at": 1509238434
+  }],
+  "total_entries": 1,
+  "per_page": 30,
+  "total_pages": 1,
+  "previous_page": null,
+  "current_page": 1,
+  "next_page": null,
+  "type": "list"
+}{% endhighlight %}</p>
+
+<p>
+  All the meta-data about the collection (the number of entries, the pagination information and
+  so on) is provided by Pragma's default <code>Collection</code> decorator, which looks like this by
+  default:
+</p>
+
+<p>{% highlight ruby %}module API
+  module V1
+    module Article
+      module Decorator
+        class Collection < Pragma::Decorator::Base
+          feature Pragma::Decorator::Type
+          feature Pragma::Decorator::Collection
+          feature Pragma::Decorator::Pagination
+
+          decorate_with Instance
+        end
+      end
+    end
+  end
+end{% endhighlight %}</p>
+
+<p>
+  You will almost never have to edit this, unless you want to add additional metadata about the
+  collection.
 </p>
 
 <p>
