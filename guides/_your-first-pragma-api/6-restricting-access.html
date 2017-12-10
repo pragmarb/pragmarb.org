@@ -1,0 +1,114 @@
+<h2 class="display-5" id="restricting-access">Restricting access</h2>
+
+<p>
+  Now, let's try to restrict access to articles. If you remember, our <code>Article</code>
+  model has an <code>author</code> relationship. We want to put the following restrictions
+  in place:
+</p>
+
+<ul>
+  <li>
+    authors should be able to completely manage all of their articles, even when
+    unpublished;
+  </li>
+  <li>regular users should only be able to read published articles.</li>
+</ul>
+
+<p>
+  Implementing an authentication system is outside of the scope of this guide, so for now just
+  add this to your <code>application_controller.rb</code>:
+</p>
+
+<p>{% highlight ruby %}class ApplicationController < ActionController::Base
+  # ...
+
+  protected
+
+  def current_user
+    Author.find(request.headers['X-Author-Id'])
+  end
+end{% endhighlight %}</p>
+
+<p>(Don't do this at home, please.)</p>
+
+<p>
+  Now, if you open the <code>Policy</code> class for your <code>Article</code> resource, you
+  should see this empty policy:
+</p>
+
+<p>{% highlight ruby %}module API
+  module V1
+    module Article
+      class Policy < Pragma::Policy::Base
+        class Scope < Pragma::Policy::Base::Scope
+          def resolve
+            scope.all
+          end
+        end
+
+        def show?
+          true
+        end
+
+        def create?
+          true
+        end
+
+        def update?
+          true
+        end
+
+        def destroy?
+          true
+        end
+      end
+    end
+  end
+end{% endhighlight %}</p>
+
+As you can see, currently everyone can do everything, which is not good. Let's tweak the policy a
+bit to keep hackers away:
+
+<p>{% highlight ruby %}module API
+  module V1
+    module Article
+      class Policy < Pragma::Policy::Base
+        class Scope < Pragma::Policy::Base::Scope
+          def resolve
+            scope.where(author: user).or(scope.where(published: true))
+          end
+        end
+
+        def show?
+          record.published? || record.author == user
+        end
+
+        def create?
+          record.author == user
+        end
+
+        def update?
+          record.author == user
+        end
+
+        def destroy?
+          record.author == user
+        end
+      end
+    end
+  end
+end
+{% endhighlight %}</p>
+
+<p>
+  This is pretty simple: basically, the first thing we do is define a "scope", which is a class
+  whose purpose is to take a query and a user and refine the query so that it only includes records
+  accessible by that user. In the rest of the policy we define the conditions that the record and
+  user must meet in order for each action to be permitted.
+</p>
+
+<p>
+  These are the basics of policies. There's nothing terribly fancy about them, but you are
+  encouraged to take a look at <a href="https://github.com/pragmarb/pragma-policy">the GitHub
+  repo</a> and play around with the code.
+</p>

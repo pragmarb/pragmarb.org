@@ -1,0 +1,45 @@
+<h2 class="display-5" id="creating-resources">Creating resources</h2>
+<p>
+  A Pragma resource is nothing more than data which can be operated on, just like a REST
+  resource. On a technical level, each resource will have its own namespace and contain
+  operations, decorators, contracts and a policy. All of these are optional, but usually
+  you'll want to have all of them.
+</p>
+<p>
+  In a Rails Pragma app, your resources will be stored in <code>app/resources</code>. They
+  will usually map to a model, but not always. Pragma::Rails also provides a generator for
+  creating a new resource, complete with its own system tests. Think of it as <code>rails g scaffold</code>
+  for Pragma. Try this:
+</p>
+<pre><code>$ rails g pragma:resource article</code></pre>
+<p>This will generate the following file structure:</p>
+<p><pre><code>app/resources
+└── api
+    └── v1
+        └── article
+            ├── contract
+            │   ├── base.rb
+            │   ├── create.rb
+            │   └── update.rb
+            ├── decorator
+            │   ├── collection.rb
+            │   ├── instance.rb
+            ├── operation
+            │   ├── index.rb
+            │   ├── show.rb
+            │   ├── create.rb
+            │   └── update.rb
+            │   └── destroy.rb
+            └── policy.rb
+spec/requests
+└── api
+    └── v1
+        └── articles_spec.rb</code></pre></p>
+<p>It will also edit your <code>config/routes.rb</code> to create CRUD routes for the resource.</p>
+<p>
+  You are encouraged to explore the generated files, even though most of them will be
+  empty at this point. You have created your first resource which is directly mapped to a
+  model, but it doesn't accept any input or present any output yet. It's also publicly
+  accessible, meaning everyone will be able to see all articles, even the unpublished ones.
+</p>
+<p>Let's see how we can fix all of that!</p>

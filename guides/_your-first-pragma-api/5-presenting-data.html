@@ -1,0 +1,99 @@
+<h2 class="display-5" id="presenting-data">Presenting data</h2>
+
+<p>
+  Let's start with the basics: reading existing articles. First of all, we'll create a new
+  author and article from the console:
+</p>
+
+<pre><code>$ rails c</code></pre>
+
+<p>When the console is open, type the following into it:</p>
+
+<p>{%highlight ruby%}author = Author.create!(
+  first_name: 'John',
+  last_name: 'Doe'
+)
+
+Article.create!(
+  author: author,
+  title: 'Hello, world!',
+  body: 'This is my first article. How cool is this?'
+){%endhighlight%}</p>
+
+
+<p>Now, let's try to access our article:</p>
+
+<pre><code>$ curl 'http://localhost:5000/api/v1/articles/be9da202-fc8d-44e6-a8f7-54b1398cfad0'
+{}</code></pre>
+
+<div class="alert alert-info" role="alert">
+  <strong>Note:</strong> You might have noticed that, while Rails' default is to use incremental
+  IDs, the starter template provided by Pragma uses UUIDs instead. UUIDs are preferable because
+  they provide additional security, make sharding easier when the time comes for scaling your DB and
+  also because clients can set them themselves, potentially reducing the number of round trips
+  needed to complete an operation.
+</div>
+
+<p>
+  What's going on here? Well, the instance decorator for your <code>Article</code> resource is
+  empty, so Pragma is responding with an empty JSON object. Decorators take your resource instances
+  and represent them as JSON. Each resource usually has two decorators: one for presenting the
+  collection of resources and one for presenting a single instance, named respectively
+  <code>Collection</code> and <code>Instance</code>.
+</p>
+
+<p>Let's edit the instance decorator, so that we can present articles properly:</p>
+
+<p>{% highlight ruby %}module API
+  module V1
+    module Article
+      module Decorator
+        class Instance < Pragma::Decorator::Base
+          feature Pragma::Decorator::Association
+          feature Pragma::Decorator::Timestamp
+
+          property :id
+          property :title
+          property :body
+          property :published
+          property :author_id, as: :author
+
+          timestamp :created_at
+          timestamp :updated_at
+        end
+      end
+    end
+  end
+end {% endhighlight %}</p>
+
+<p>If you try to access the article again, it will look much better now:</p>
+
+<p>
+{% highlight json %}{
+  "id": "be9da202-fc8d-44e6-a8f7-54b1398cfad0",
+  "title": "Hello, world!",
+  "body": "This is my first article. How cool is this?",
+  "author": "bad87963-d8b2-408a-876e-c84740121aed",
+  "created_at": 1509238434,
+  "updated_at": 1509238434
+}{%endhighlight%}
+</p>
+
+<p>
+  As you can see, you can present a property as-is with <code>property</code>. We have also renamed
+  our <code>author_id</code> property to <code>author</code>, so that it can be easily expanded in
+  the future (more on this in the following guides).
+</p>
+
+<p>
+  <code>timestamp</code>, on the other hand, is a helper that takes a datetime object and
+  converts it into a UNIX timestamp, which is the preferred method to present times in an API.
+</p>
+
+<p>
+  Decorators are built on top of
+  <a href="https://github.com/trailblazer/representable">Representable</a>. They provide conditional
+  properties, association expansion, type casting and many other powerful features. For a
+  comprehensive list, have a look at
+  <a href="https://github.com/pragmarb/pragma-decorator">Decorator's documentation</a>.
+</p>

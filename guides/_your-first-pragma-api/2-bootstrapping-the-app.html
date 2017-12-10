@@ -1,0 +1,23 @@
+<h2 class="display-5" id="bootstrapping-the-app">Bootstrapping the app</h2>
+
+<p>
+  First things first. To create a new Rails app with Pragma support, just clone our starter
+  repository:
+</p>
+
+<p>
+<pre><code>$ git clone https://github.com/pragmarb/pragma-rails-starter.git blog</code></pre>
+</p>
+
+<p>
+  This will create a Pragma app ready to go in the <code>blog</code> directory. Just enter the
+  directory and take a look at the readme to learn about all the tools it comes with.
+</p>
+
+<p>Since we need our API to persist data, we'll create first create our models:</p>
+
+<p>
+<pre><code>$ rails g model Author first_name last_name
+$ rails g model Article author:belongs_to title body:text published:boolean
+$ rails db:migrate</code></pre>
+</p>
