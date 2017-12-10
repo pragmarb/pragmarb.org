@@ -1,1 +1,152 @@
-<h2 class="display-5" id="tweaking-operations"></h2>
+<h2 class="display-5" id="tweaking-operations">Tweaking operations</h2>
+
+<p>
+  Now that we are aware of who the current user is, you'll probably have noticed the inefficiency of
+  having to specify the author ID manually when creating a new article. Instead, we could just take
+  the current user's ID and use that.
+</p>
+
+<p>
+  In order to do that, we'll dive into the only piece of our resource that we haven't explored yet:
+  operations. Operations contain the business logic of our API, and are the glue keeping policies,
+  contracts and decorators together. In fact, all of the other components are used by operations.
+</p>
+
+<p>
+  Nothing prevents you from building your own operations, but Pragma already ships with a set of
+  five default operations: they are, predictably, <code>Index</code>, <code>Show</code>,
+  <code>Create</code>, <code>Update</code> and <code>Destroy</code>. These default operations are
+  incredibly powerful and customizable, so it is a very rare occurrence that you have to build your
+  own operation from scratch. Instead, you'll usually inherit from the default ones and either tweak
+  one of the other components or customize the operation itself.
+</p>
+
+<p>
+  What we want to do here is set the <code>author</code> property of new articles to the current
+  user automatically, so we are going to edit the <code>Create</code>. Here's what it should look
+  like now:
+</p>
+
+<p>{% highlight ruby %}module API
+  module V1
+    module Article
+      module Operation
+        class Create < Pragma::Operation::Create
+        end
+      end
+    end
+  end
+end{% endhighlight %}</p>
+
+<p>
+  Not terribly exciting, right? The class is empty because all the complexity is nicely tucked into
+  <code>Pragma::Operation::Create</code>, the default Pragma operation.
+</p>
+
+<p>
+  Here's a bit more info on the structure of operations: each operation has a <em>success track</em>
+  and a <em>failure track</em>, and each of these tracks has multiple steps. By default, the
+  operation's execution starts on the success tracks. The steps are run in order and their return
+  value is checked. If a step returns <code>false</code>, the operation switches to the
+  <em>failure</em> track and continues the execution there. Otherwise, the execution continues on
+  the success track. (This might sound very confusing right now, but it's actually quite simple.
+  More details will be provided at the end of this chapter.)
+</p>
+
+<p>
+  In our particular case, we are first going to remove the <code>author</code> property and setter
+  from the contract. Then, we are going to append a step to the success track of our operation. This
+  can be done with the <code>step</code> DSL method:
+</p>
+
+<p>{% highlight ruby %}module API
+  module V1
+    module Article
+      module Operation
+        class Create < Pragma::Operation::Create
+          step :set_author!
+
+          def set_author!(options:, **)
+            options['model'].update!(author: options['current_user'])
+          end
+        end
+      end
+    end
+  end
+end{% endhighlight %}</p>
+
+<div class="alert alert-info" role="alert">
+  <strong>Note:</strong> In case you're wondering, the method for adding a step to the failure track
+  is named, quite fittingly, <code>failure</code>. It has almost the same exact API as
+  <code>step</code>.
+</div>
+
+<p>
+  What this will do is execute the entire default <code>Create</code> operation and, when it's done,
+  update the record we just created, setting the <code>author</code> property to the current user.
+</p>
+
+<p>
+  You can now try creating a new article without specifying the author, making sure to provide
+  the appropriate authentication header:
+</p>
+
+<p>
+  <pre><code>curl 'https://our-api.example.com/api/v1/articles' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'X-Author-Id: bad87963-d8b2-408a-876e-c84740121aed' \
+  -d '{
+    "title": "Hello, world!",
+    "body": "This is my first article. How cool is this?"
+  }'</code></pre>
+</p>
+
+<p>You will notice that the new article got the <code>author</code> property set automatically.</p>
+
+<p>
+  However, the customization options don't just end here. In fact, the way we have implemented our
+  new step is pretty inefficient, because it will first save the article without the author
+  property, and then update the new article to set the author. This would fail, for instance, if we
+  had a <code>NOT NULL</code> constraint on the <code>author_id</code> column. How can we solve
+  this, then? We should find a way to set the author <em>before</em> the record is persisted to the
+  database.
+</p>
+
+<p>
+  As it turns out, the <code>step</code> method is quite flexible, as it allows us to also specify
+  the <em>position</em> of our new step. In this case, we want to set the author right before saving
+  the record, which we can do by refactoring the <code>Create</code> operation like this:
+</p>
+
+<p>{% highlight ruby %}module API
+  module V1
+    module Article
+      module Operation
+        class Create < Pragma::Operation::Create
+          step :set_author!, before: 'persist.save'
+
+          def set_author!(options:, **)
+            options['model'].author = options['current_user']
+          end
+        end
+      end
+    end
+  end
+end{% endhighlight %}</p>
+
+<p>
+  The end result is exactly the same, except for the fact that now only one <code>INSERT</code> SQL
+  query will be executed, instead of an <code>INSERT</code> followed by an <code>UPDATE</code>.
+</p>
+
+<p>
+  There is much more to operations: putting steps <em>before</em> other steps, replacing existing
+  steps, destructuring options, creating, using and configuring macros, visualizing the steps... The
+  possibilities are almost endless, and the API pretty simple. Since Pragma operations are based on
+  <a href="http://trailblazer.to/gems/operation/2.0/">Trailblazer</a>, you should look at their
+  documentation first, which will give you a very solid understanding of how operations work. Then,
+  you can explore the
+  <a href="https://github.com/pragmarb/pragma/tree/master/lib/pragma/operation">source code</a> of
+  Pragma's default operations to understand what steps they execute and how you can tweak them.
+</p>
