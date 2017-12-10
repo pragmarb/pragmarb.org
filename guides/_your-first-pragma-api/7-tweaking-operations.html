@@ -13,15 +13,6 @@
 </p>
 
 <p>
-  Nothing prevents you from building your own operations, but Pragma already ships with a set of
-  five default operations: they are, predictably, <code>Index</code>, <code>Show</code>,
-  <code>Create</code>, <code>Update</code> and <code>Destroy</code>. These default operations are
-  incredibly powerful and customizable, so it is a very rare occurrence that you have to build your
-  own operation from scratch. Instead, you'll usually inherit from the default ones and either tweak
-  one of the other components or customize the operation itself.
-</p>
-
-<p>
   What we want to do here is set the <code>author</code> property of new articles to the current
   user automatically, so we are going to edit the <code>Create</code>. Here's what it should look
   like now:
@@ -42,6 +33,15 @@ end{% endhighlight %}</p>
   Not terribly exciting, right? The class is empty because all the complexity is nicely tucked into
   <code>Pragma::Operation::Create</code>, the default Pragma operation.
 </p>
+
+<div class="alert alert-info" role="alert">
+  Nothing prevents you from building your own operations, but Pragma already ships with a set of
+  five default operations: they are, predictably, <code>Index</code>, <code>Show</code>,
+  <code>Create</code>, <code>Update</code> and <code>Destroy</code>. These default operations are
+  incredibly powerful and customizable, so it is a very rare occurrence that you have to build your
+  own operation from scratch. Instead, you'll usually inherit from the default ones and either tweak
+  one of the other components or customize the operation itself.
+</div>
 
 <p>
   Here's a bit more info on the structure of operations: each operation has a <em>success track</em>
