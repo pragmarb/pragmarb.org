@@ -142,9 +142,9 @@ end{% endhighlight %}
     module Article
       module Decorator
         class Instance < Pragma::Decorator::Base
-          feature Pragma::Decorator::Type
-          feature Pragma::Decorator::Timestamp
-          feature Pragma::Decorator::Association
+          include Pragma::Decorator::Type
+          include Pragma::Decorator::Timestamp
+          include Pragma::Decorator::Association
 
           property :title
           property :body
@@ -158,8 +158,9 @@ end{% endhighlight %}
         end
 
         class Collection < Pragma::Decorator::Base
-          feature Pragma::Decorator::Collection
-          feature Pragma::Decorator::Pagination
+          include Pragma::Decorator::Type
+          include Pragma::Decorator::Collection
+          include Pragma::Decorator::Pagination
         end
       end
     end
@@ -181,12 +182,13 @@ end{% endhighlight %}
         class Index < Pragma::Operation::Index
           self['pagination.default_per_page'] = 10
           self['expand.enabled'] = false
+          self['ordering.default_column'] = :updated_at
         end
 
         class Show < Pragma::Operation::Show; end
 
         class Create < Pragma::Operation::Create
-          step :send_newsletter!
+          success :send_newsletter!
 
           def send_newsletter!(model:, **options)
             if options['result.contract.default'].send_newsletter
