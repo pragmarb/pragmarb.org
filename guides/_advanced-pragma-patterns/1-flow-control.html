@@ -1,0 +1,25 @@
+<h2 class="display-5" id="flow-control">Flow control</h2>
+
+<p>
+  You may have also noticed that we are returning <code>true</code> at the end of the new step. This is because in a
+  regular step a falsey return value (<code>nil</code> or <code>false</code>) will make the operation fail and deviate
+  to the failure track, which means regular steps will stop executing. However, there is a way to solve this without
+  having to add boilerplate to your step: just use <code>success</code>. <code>success</code> will execute the step and
+  then discard the return value, always treating the step as successful. Here's how we could rewrite our step:
+</p>
+
+<p>{%highlight ruby%}module API
+  module V1
+    module Post
+      module Operation
+        class Create < Pragma::Operation::Create
+          success :send_newsletter!
+
+          def send_newsletter!(model:, **)
+            NewsletterService.send_newsletter(model)
+          end
+        end
+      end
+    end
+  end
+end{%endhighlight%}</p>

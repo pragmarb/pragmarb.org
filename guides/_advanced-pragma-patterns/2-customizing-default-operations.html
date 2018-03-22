@@ -1,0 +1,107 @@
+<h2 class="display-5" id="customizing-default-operations">Customizing default operations</h2>
+
+<p>
+  Sometimes, you might need to customize the default CRUD operations provided by Pragma at different levels. For
+  instance, you might want the Show operation to find blog posts by slug rather than by ID, or your Create operation
+  to send a notification to your newsletter subscribers once a new blog post has been published.
+</p>
+
+<p>
+  Depending on what you need to do, this can be accomplished by adding new steps or replacing existing steps of an
+  operation.
+</p>
+
+<h3 class="display-6" id="appending-steps">Appending steps</h3>
+
+<p>
+  If you want to add a step at the end of an operation, all you have to do is add a <code>step</code> declaration to
+  the operation. Let's take the case of sending an email to your subscribers when a new blog post is published:
+</p>
+
+<p>{%highlight ruby%} module API
+  module V1
+    module Post
+      module Operation
+        class Create < Pragma::Operation::Create
+          step :send_newsletter!
+
+          def send_newsletter!(model:, **)
+            NewsletterService.send_newsletter(model)
+            true
+          end
+        end
+      end
+    end
+  end
+end{%endhighlight%}</p>
+
+<p>
+  The code above appends a <code>send_newsletter!</code> step at the end of your
+  <code>API::V1::Post::Operation::Create</code> operation that calls a service object to send a newsletter to your
+  subscribers. In case you're wondering, <code>model</code> in the operation step is just a shortcut for
+  <code>options['model']</code>.
+</p>
+
+<h3 id="replacing-steps">Replacing steps</h3>
+
+<p>
+  Let's try something a bit more difficult this once: we will rewrite the Show operation for articles to find them by
+  slug rather than ID and improve the UX of our application. For this, we will need to replace the step of the default
+  Show operation that finds the record to expose.
+</p>
+
+<p>The syntax for replacing a step is the following:</p>
+
+<p>{%highlight ruby%}step :find_by_slug!, replace: 'existing_step_name'
+
+def find_by_slug!(options)
+  # ...
+end{%endhighlight%}</p>
+
+<p>
+  How do we find the name of the step to replace though? There are two ways: you can either open the default operation's
+  source code or use introspection! The first one is pretty straightforward: just open the base class in your IDE or
+  <a href="https://github.com/pragmarb/pragma/blob/master/lib/pragma/operation/show.rb">GitHub</a>. If you prefer to
+  leverage introspection, just open a Rails console in your app and type the following:
+</p>
+
+<p>{%highlight ruby%}API::V1::Article::Show.skills['pipetree']{%endhighlight%}</p>
+
+<p>For a standard Show operation, this will display something along these lines:</p>
+
+<p><pre>=> [>operation.new,>classes,>model.find_by,>policy.default,>decorator.instance,>respond]</pre></p>
+
+<p>
+  That's the list of all steps that your operation contains. The <code>></code> indicates that the step is on the right
+  track (i.e. it executes when the operation is successful), what comes after is the name of the step. See anything
+  interesting there? The <code>model.find_by</code> step seems to be what you're looking for.
+</p>
+
+<p>With this new knowledge you have acquired, you can now replace the right step:</p>
+
+<p>{%highlight ruby%}module API
+  module V1
+    module Article
+      module Operation
+        class Show < Pragma::Operation::Show
+          step :find_by_slug!, replace: 'model.find_by'
+
+          def find_by_slug!(options, params:, **)
+            options['model'] = options['model.class'].find_by(slug: params[:slug])
+
+            # Remember that all steps also need to handle their errors properly.
+            unless options['model']
+              options['result.response'] = Pragma::Operation::Response::NotFound
+                .new
+                .decorate_with(Pragma::Decorator::Error)
+
+              return false
+            end
+
+            true
+          end
+        end
+      end
+    end
+  end
+end{%endhighlight%}</p>
