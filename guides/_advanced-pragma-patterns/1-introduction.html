@@ -1,0 +1,54 @@
+<h2 class="display-5" id="introduction">Introduction</h2>
+
+<p>
+  Pragma is split into four components:
+</p>
+
+<ul>
+  <li>
+    <strong><a href="https://github.com/pragmarb/pragma-operation">Operation</a></strong>:
+    operations encapsulate the business logic of your API. Pragma delegates to operations when
+    an endpoint of your API is called.
+  </li>
+
+  <li>
+    <strong><a href="https://github.com/pragmarb/pragma-contract">Contract</a></strong>:
+    contracts are like form objects, but for APIs. They also validate incoming GET parameters
+    to ensure that the requests are well-formed.
+  </li>
+
+  <li>
+    <strong><a href="https://github.com/pragmarb/pragma-decorator">Decorator</a></strong>:
+    decorators (sometimes also referred to as "representers") take your resources and present
+    them to your API's clients in JSON or other formats.
+  </li>
+
+  <li>
+    <strong><a href="https://github.com/pragmarb/pragma-policy">Policy</a></strong>: policies
+    are lightweight Ruby classes that determine which resources a user has access to and what
+    operations they can perform on it.
+  </li>
+</ul>
+
+<p>We also provide additional tools:</p>
+
+<ul>
+  <li>
+    <strong><a href="https://github.com/pragmarb/pragma-rails">Pragma::Rails</a></strong>
+    is our Rails integration. It's a very thin layer taking care of dispatching to operations
+    with the right parameters.
+  </li>
+
+  <li>
+    <strong><a href="https://github.com/pragmarb/pragma-rails-starter">Pragma Rails starter</a></strong>
+    is our starter Rails template. It comes with Pragma (obviously!) plus some additional
+    tools that will make API development a breeze.
+  </li>
+</ul>
+
+<p>
+  In this guide, we'll leverage all of the aforementioned gems and tools to build a simple
+  RESTful API for a blog engine with Pragma and Rails. Our API will allow users to list,
+  display, create, update and delete articles. We will also implement a dead-simple
+  authentication system to showcase Pragma's authorization system.
+</p>
