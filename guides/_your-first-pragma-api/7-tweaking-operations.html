@@ -66,7 +66,7 @@ end{% endhighlight %}</p>
         class Create < Pragma::Operation::Create
           step :set_author!
 
-          def set_author!(options:, **)
+          def set_author!(options)
             options['model'].update!(author: options['current_user'])
           end
         end
@@ -126,7 +126,7 @@ end{% endhighlight %}</p>
         class Create < Pragma::Operation::Create
           step :set_author!, before: 'persist.save'
 
-          def set_author!(options:, **)
+          def set_author!(options)
             options['model'].author = options['current_user']
           end
         end
